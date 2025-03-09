@@ -4,22 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fcadcc40-f91c-4dd9-94a7-1d6173f3b911" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/web_app_1.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NeuroScope/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NeuroScope/static/css/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NeuroScope/static/images/brain_mri.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NeuroScope/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/change_password.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/profile.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/signup.html" afterDir="false" />
+    <list default="true" id="fcadcc40-f91c-4dd9-94a7-1d6173f3b911" name="Changes" comment="hello">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,8 +74,17 @@
       <option name="presentableId" value="Default" />
       <updated>1741469784817</updated>
       <workItem from="1741469785895" duration="4000" />
-      <workItem from="1741532575583" duration="7699000" />
+      <workItem from="1741532575583" duration="8602000" />
     </task>
+    <task id="LOCAL-00001" summary="hello">
+      <option name="closed" value="true" />
+      <created>1741548936275</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1741548936275</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -104,5 +100,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="hello" />
+    <option name="LAST_COMMIT_MESSAGE" value="hello" />
   </component>
 </project>
