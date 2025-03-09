@@ -2,29 +2,98 @@
 <html lang="en">
 <head>
     {% load static %}
-    <title>Profile</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Neuroscope</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;  /* Centers the image */
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Profile Page</h2>
-        <!-- Home Button (Top Left) -->
-        <div class="position-absolute top-0 start-0 m-3">
-            <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
-        </div>
 
-        <!-- Profile Picture -->
-        {% if user.profile.profile_picture %}
-            <img src="{{ user.profile.profile_picture.url }}" class="profile-pic" alt="Profile Picture">
-        {% else %}
-            <img src="{% static 'images/default-avatar.png' %}" class="profile-pic" alt="Default Profile Picture">
-        {% endif %}
-
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
+    <!-- Home & Go Back Buttons -->
+    <div class="position-absolute top-0 start-0 m-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+        <button class="btn btn-outline-dark" onclick="history.back()"> Go Back</button>
     </div>
+
+    <div class="container mt-5">
+        <div class="card p-4 shadow-lg text-center" style="max-width: 500px; margin: auto;">
+            <h2>Profile</h2>
+
+            <!-- Profile Picture (Centered) -->
+            <img src="{{ profile_picture }}" class="profile-avatar img-thumbnail" alt="Profile Picture">
+
+            <!-- Verification Status -->
+            {% if user.profile.is_verified %}
+                <div class="alert alert-success text-center">
+                    ✅ Verified User
+                </div>
+            {% else %}
+                <div class="alert alert-warning text-center">
+                    ⚠ Your account is not verified. Upload your certificate for approval.
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Display Username -->
+                <p><strong>Username:</strong> {{ user.username }}</p>
+
+                <!-- Masked Email -->
+                <p><strong>Email:</strong> {{ masked_email }}</p>
+
+                <!-- Profile Picture Upload -->
+                <div class="mb-3">
+                    <label class="form-label">Change Profile Picture:</label>
+                    {{ profile_form.profile_picture }}
+                </div>
+
+                <!-- Bio Field (Smaller Input) -->
+                <div class="mb-3">
+                    <label class="form-label">Bio:</label>
+                    <input type="text" class="form-control" name="bio" value="{{ profile_form.bio.value|default:'' }}" maxlength="200">
+                </div>
+
+                <!-- Social Media Links -->
+                <div class="mb-3">
+                    <label class="form-label">GitHub:</label>
+                    {{ profile_form.github }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">LinkedIn:</label>
+                    {{ profile_form.linkedin }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Twitter:</label>
+                    {{ profile_form.twitter }}
+                </div>
+
+                <!-- Certificate Upload -->
+                <div class="mb-3">
+                    <label class="form-label">Upload Certificate:</label>
+                    {{ profile_form.certificate }}
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>

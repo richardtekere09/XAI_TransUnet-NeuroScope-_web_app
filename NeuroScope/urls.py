@@ -1,7 +1,6 @@
-from django.urls import path
-from django.urls import path
-from .views import home, signup_view, login_view, logout_view, profile_view,  change_password  # Import functions directly
 from django.urls import path, include
+from .views import home, signup_view, login_view, logout_view, profile_view,  change_password  # Import functions directly
+
 
 urlpatterns = [
     path('', home, name='home'),

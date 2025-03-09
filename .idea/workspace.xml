@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fcadcc40-f91c-4dd9-94a7-1d6173f3b911" name="Changes" comment="hello" />
+    <list default="true" id="fcadcc40-f91c-4dd9-94a7-1d6173f3b911" name="Changes" comment="hello">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,18 +23,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "richardtekere09"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;richardtekere09&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/richardtekere09/XAI_TransUnet-NeuroScope-_web_app.git",
-    "accountId": "32324ffb-6bac-49d3-be2b-6a84524d2314"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/richardtekere09/XAI_TransUnet-NeuroScope-_web_app.git&quot;,
+    &quot;accountId&quot;: &quot;32324ffb-6bac-49d3-be2b-6a84524d2314&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -83,7 +85,8 @@
       <option name="presentableId" value="Default" />
       <updated>1741469784817</updated>
       <workItem from="1741469785895" duration="4000" />
-      <workItem from="1741532575583" duration="8920000" />
+      <workItem from="1741532575583" duration="9416000" />
+      <workItem from="1741550759946" duration="119000" />
     </task>
     <task id="LOCAL-00001" summary="hello">
       <option name="closed" value="true" />

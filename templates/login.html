@@ -19,7 +19,9 @@
             <h2 class="text-center">Login</h2>
 
             <!-- Home Button -->
-            <a href="{% url 'home' %}" class="btn btn-secondary mb-3">Home</a>
+           <div class="position-absolute top-0 start-0 m-3">
+                <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+            </div>
 
             <form method="post">
                 {% csrf_token %}

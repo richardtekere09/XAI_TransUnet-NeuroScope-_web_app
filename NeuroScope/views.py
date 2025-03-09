@@ -5,7 +5,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from .forms import ProfileUpdateForm
+from django.contrib import messages
+from django.templatetags.static import static
+from django.contrib.auth.decorators import login_required
+from .forms import UserUpdateForm, ProfileUpdateForm
+from django.conf import settings
 
 # Create your views here.
 #home view
@@ -35,16 +39,44 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-@login_required  # Prevents users from accessing the profile page without logging in
+
+def mask_email(email):
+    """Mask email like t*****@gmail.com"""
+    if "@" in email:
+        username, domain = email.split("@")
+        return username[0] + "*****@" + domain
+    return email
+
+@login_required
 def profile_view(request):
     if request.method == 'POST':
-        user = request.user
-        user.username = request.POST['username']
-        user.email = request.POST['email']
-        user.save()
-        return redirect('profile')
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
 
-    return render(request, 'profile.html')
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')
+
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    # Masked email
+    masked_email = mask_email(request.user.email)
+
+    # Load profile picture OR default avatar
+    if request.user.profile.profile_picture:
+        profile_picture = static('images/default-avatar.jpg')
+    else:
+        profile_picture = static('images/default-avatar.jpg')  # Use static path
+
+    return render(request, 'profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'masked_email': masked_email,
+        'profile_picture': profile_picture
+    })
 
 @login_required
 def change_password(request):
@@ -52,7 +84,8 @@ def change_password(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # Keep user logged in
+            update_session_auth_hash(request, user)  # Keeps user logged in
+            messages.success(request, "Your password was successfully updated!")
             return redirect('profile')
     else:
         form = PasswordChangeForm(request.user)
