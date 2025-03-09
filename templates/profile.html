@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Profile Page</h2>
+        <!-- Home Button (Top Left) -->
+        <div class="position-absolute top-0 start-0 m-3">
+            <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+        </div>
+
+        <!-- Profile Picture -->
+        {% if user.profile.profile_picture %}
+            <img src="{{ user.profile.profile_picture.url }}" class="profile-pic" alt="Profile Picture">
+        {% else %}
+            <img src="{% static 'images/default-avatar.png' %}" class="profile-pic" alt="Default Profile Picture">
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+</body>
+</html>
