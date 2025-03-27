@@ -38,7 +38,7 @@ class Doctor(models.Model):
 
 
 # -------------------------------------
-# ✅ MRI Scans Table
+#  MRI Scans Table
 # -------------------------------------
 class MRI_Scan(models.Model):
     patient_uid = models.CharField(max_length=50, unique=True)  # Unique identifier for each scan
@@ -55,7 +55,7 @@ class MRI_Scan(models.Model):
 
 
 # -------------------------------------
-# ✅ Doctor Feedback (Reviews)
+#  Doctor Feedback (Reviews)
 # -------------------------------------
 class DoctorFeedback(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)  # Doctor giving feedback

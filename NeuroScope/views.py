@@ -27,6 +27,9 @@ def signup_view(request):
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
+def public_home(request):
+    return render(request, 'public_home.html')
+
 # Login View
 def login_view(request):
     if request.method == 'POST':
@@ -96,3 +99,9 @@ def change_password(request):
 def logout_view(request):
     logout(request)
     return redirect('home')  # Redirect to home page after logout
+
+def neurocheck_view(request):
+    return render(request, 'neurocheck.html')
+
+def blog_view(request):
+    return render(request, 'blog.html')

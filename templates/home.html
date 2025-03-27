@@ -72,6 +72,110 @@
         </div>
     </div>
 
+    <!-- Features Section -->
+    <section class="py-5">
+      <div class="container text-center">
+        <h2 class="mb-4">Platform Features</h2>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">📤 Upload MRI</h5>
+                <p class="card-text">Upload anonymized MRI scans securely (verified users only).</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">🧠 AI Segmentation</h5>
+                <p class="card-text">View how our AI model segments tumor regions using TransUNet.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">🔍 Explainable AI</h5>
+                <p class="card-text">Transparent decision-making with SHAP and Grad-CAM.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">📝 Feedback</h5>
+                <p class="card-text">Doctors can leave feedback on AI results after analysis.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NeuroCheck -->
+    <section class="py-5 bg-light text-center">
+      <div class="container">
+        <h2 class="mb-4">🧠 NeuroCheck Assistant</h2>
+        <p>Learn about your brain health and lifestyle with our smart assistant.</p>
+        <a href="{% url 'neurocheck' %}" class="btn btn-primary">Try NeuroCheck</a>
+      </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="py-5">
+      <div class="container text-center">
+        <h2 class="mb-4">🧪 From the Blog</h2>
+        <p>Explore medical AI, research progress, and model explainability.</p>
+        <a href="{% url 'blog' %}" class="btn btn-outline-secondary">Visit Blog</a>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-5 bg-light">
+      <div class="container">
+        <h2 class="text-center mb-4">❓ Frequently Asked Questions</h2>
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                How does the AI model work?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show">
+              <div class="accordion-body">
+                We use TransUNet for segmentation, with SHAP and Grad-CAM for visual explanations.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                What types of MRI scans are supported?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse">
+              <div class="accordion-body">
+                DICOM (.dcm) and NIfTI (.nii, .nii.gz) formats are supported.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                Can I try the tool as a guest?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse">
+              <div class="accordion-body">
+                You can explore features and NeuroCheck as a guest. Uploading and feedback are restricted to verified users.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Bootstrap Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
