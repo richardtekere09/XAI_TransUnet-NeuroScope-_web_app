@@ -12,11 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
+import environ
 load_dotenv()
 
 # Use SECRET_KEY from .env
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
 
 # Set DEBUG mode from .env
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.csrf.CsrfViewMiddleware',
 ]
 
 ROOT_URLCONF = "web_app_1.urls"

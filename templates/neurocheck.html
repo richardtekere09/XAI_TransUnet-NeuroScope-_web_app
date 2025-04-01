@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroCheck Assistant</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    body {
+      background: #203a43; /* Soft dark background for a calm, professional look */
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 2em;
+      text-align: center;
+      color: #212127; /* Dark color for text contrast */
+      text-transform: uppercase;
+    }
+
+    .form-section, .chat-section {
+      background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+    }
+
+    .form-section:hover, .chat-section:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .chat-box {
+      max-height: 300px;
+      overflow-y: auto;
+      background-color: #f4f6f8;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .chat-entry {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .user-msg {
+      background-color: #e0f7fa;
+      color: #00796b;
+      font-weight: bold;
+    }
+
+    .ai-msg {
+      background-color: #e1bee7;
+      color: #512da8;
+      font-style: italic;
+    }
+
+    .btn-submit {
+      margin-top: 20px;
+      background-color: #4caf50;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #388e3c;
+      cursor: pointer;
+    }
+
+    .questionnaire input, .questionnaire select {
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
+
+    .questionnaire button {
+      background-color: #ff7043;
+      border-radius: 8px;
+      color: white;
+      padding: 12px 25px;
+      margin-top: 20px;
+    }
+
+    .questionnaire button:hover {
+      background-color: #f4511e;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="text-center mb-4 text-white">🧠 NeuroCheck Smart Health Assistant</h1>
+
+    <!-- Questionnaire Section -->
+    <div class="form-section questionnaire">
+      <h4 class="section-title">📝 Quick Brain Health Questionnaire</h4>
+      <form id="neuroForm">
+        <div class="mb-3">
+          <label for="q1" class="form-label">Do you smoke?</label>
+          <select id="q1" class="form-select">
+            <option value="no">No</option>
+            <option value="occasionally">Occasionally</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="q2" class="form-label">How many hours of sleep do you get on average?</label>
+          <input type="number" class="form-control" id="q2" min="0" max="24" required>
+        </div>
+        <div class="mb-3">
+          <label for="q3" class="form-label">Do you have a family history of neurological disorders (e.g., stroke, Alzheimer’s)?</label>
+          <select id="q3" class="form-select">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="q4" class="form-label">Have you experienced chronic headaches, confusion, or memory loss?</label>
+          <select id="q4" class="form-select">
+            <option value="no">No</option>
+            <option value="sometimes">Sometimes</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="q5" class="form-label">Do you know that sleeping with your phone near your head may increase the risk of brain issues?</label>
+          <select id="q5" class="form-select">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="q6" class="form-label">How often do you exercise? (Per week)</label>
+          <select id="q6" class="form-select">
+            <option value="none">None</option>
+            <option value="1-2">1-2 times</option>
+            <option value="3-4">3-4 times</option>
+            <option value="5+">5+ times</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-submit" onclick="analyzeAnswers()">Submit</button>
+        <div id="riskResult" class="mt-3 fw-bold"></div>
+      </form>
+    </div>
+
+    <!-- Groq-Powered Q&A Section -->
+    <div class="chat-section">
+      <h4 class="section-title">💬 Ask About Brain Health</h4>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="input-group mt-3">
+        <input type="text" id="userQuestion" class="form-control" placeholder="Ask a question about brain diseases...">
+        <button class="btn btn-dark" onclick="askNeuroCheck()">Ask</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function analyzeAnswers() {
+      const q1 = document.getElementById("q1").value;
+      const q2 = parseInt(document.getElementById("q2").value);
+      const q3 = document.getElementById("q3").value;
+      const q4 = document.getElementById("q4").value;
+      const q5 = document.getElementById("q5").value;
+      const q6 = document.getElementById("q6").value;
+
+      let score = 0;
+      if (q1 !== 'no') score++;
+      if (q2 < 6 || q2 > 9) score++;
+      if (q3 === 'yes') score++;
+      if (q4 !== 'no') score++;
+      if (q5 === 'yes') score++;  // Impactful habit
+      if (q6 === 'none') score++;  // Lack of exercise
+
+      const result = document.getElementById("riskResult");
+      if (score <= 1) {
+        result.innerText = "🟢 Your answers suggest a low risk. Keep up your healthy habits!";
+      } else if (score === 2) {
+        result.innerText = "🟡 Moderate risk. Consider consulting a doctor if symptoms persist.";
+      } else {
+        result.innerText = "🔴 High risk detected. Please consult a neurologist for further evaluation.";
+      }
+    }
+
+<!-- neurocheck.html -->
+    function askNeuroCheck() {
+        const userInput = document.getElementById('userQuestion').value;
+        if (!userInput.trim()) {
+            alert('Please enter a question.');
+            return;
+        }
+
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML += `<div class="chat-entry user-msg">You: ${userInput}</div>`;
+
+        fetch('/neurocheck_chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ message: userInput })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const reply = data.reply || 'I am unable to provide a response at this time.';
+            chatBox.innerHTML += `<div class="chat-entry ai-msg">NeuroCheck: ${reply}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            chatBox.innerHTML += `<div class="chat-entry ai-msg">NeuroCheck: An error occurred. Please try again later.</div>`;
+        });
+
+        document.getElementById('userQuestion').value = '';
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.getElementById('userQuestion').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            askNeuroCheck();
+        }
+    });
+
+</script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

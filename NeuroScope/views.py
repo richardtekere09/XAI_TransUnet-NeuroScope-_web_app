@@ -1,4 +1,7 @@
+import os
+from common.groq_client import get_groq_client
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -8,13 +11,32 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.templatetags.static import static
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+import json
 from .forms import UserUpdateForm, ProfileUpdateForm
 from django.conf import settings
+
+import json
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from groq import Groq
+import os
+
+client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 
 # Create your views here.
 #home view
 def home(request):
     return render(request, 'home.html')
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+# Initialize the Groq client
+client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+
 
 # Signup View
 def signup_view(request):
@@ -27,8 +49,46 @@ def signup_view(request):
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
-def public_home(request):
-    return render(request, 'public_home.html')
+
+def neurocheck_view(request):
+    return render(request, 'neurocheck.html')
+
+@csrf_exempt
+def neurocheck_chat(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message')
+
+            system_prompt = {
+                "role": "system",
+                "content": (
+                    "You are a medical assistant specialized in brain health and tumor diagnosis. "
+                    "Provide detailed, informative responses that include explanations and context. "
+                    "Focus on being educational while maintaining medical accuracy. "
+                    "Include relevant medical terms but explain them in simple language. "
+                    "Always remind users to consult healthcare professionals for medical advice."
+                )
+            }
+
+            chat_history = [system_prompt, {"role": "user", "content": user_message}]
+
+            # Ensure the correct API URL is being used
+            response = client.chat.completions.create(
+                model="llama3-70b-8192",  # Check if this is a valid model
+                messages=chat_history,
+                max_tokens=150,
+                temperature=1.2
+            )
+
+            assistant_message = response.choices[0].message.content
+            return JsonResponse({'reply': assistant_message})
+        except Exception as e:
+            print(f"Error with Groq API: {e}")
+            return JsonResponse({'error': 'Something went wrong with the Groq API. Please try again later.'},
+                                status=500)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 # Login View
 def login_view(request):
@@ -100,8 +160,6 @@ def logout_view(request):
     logout(request)
     return redirect('home')  # Redirect to home page after logout
 
-def neurocheck_view(request):
-    return render(request, 'neurocheck.html')
 
 def blog_view(request):
     return render(request, 'blog.html')

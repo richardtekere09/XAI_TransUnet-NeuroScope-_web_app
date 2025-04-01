@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brain Tumor Chatbot</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .chat-container { border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+        .upload-section { margin: 20px 0; }
+        #result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Brain Tumor Analysis Chatbot</h1>
+    <div class="chat-container">
+        <div class="upload-section">
+            <h3>Upload MRI Image</h3>
+            <input type="file" id="imageInput" accept="image/*">
+            <button onclick="analyzeImage()">Analyze</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function analyzeImage() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+            if (!file) {
+                alert('Please select an image first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch('/analyze/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `
+                    <h4>Analysis Result:</h4>
+                    <p>${data.prediction}</p>
+                `;
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

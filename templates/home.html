@@ -2,134 +2,183 @@
 <html lang="en">
 <head>
     {% load static %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuroscope</title>
-
-    <!-- Bootstrap for styling -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <!-- FontAwesome for icons -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroScope | Home</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    .hero h1 {
+      animation: fadeInUp 1.5s ease-in-out;
+    }
+    .carousel-item img {
+      max-height: 500px;
+      object-fit: cover;
+      filter: brightness(0.9);
+    }
+    .carousel-caption {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+    }
+    .carousel-caption:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .accordion-button:not(.collapsed) {
+      background-color: #0f2027;
+      color: white;
+    }
+    .accordion-button:hover {
+      background-color: #203a43;
+    }
+    .section-header {
+      margin-top: 60px;
+    }
+    .btn-primary:hover {
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+    .neuro-section, .blog-section {
+      padding: 60px 0;
+      text-align: center;
+    }
+    .neuro-section h2, .blog-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .neuro-section a, .blog-section a {
+      font-size: 1.2rem;
+      padding: 10px 25px;
+      border-radius: 30px;
+    }
+    .feedback-confirmation {
+      display: none;
+      color: green;
+      font-weight: bold;
+      margin-top: 15px;
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <!-- Home Button -->
-            <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-home"></i> Neuroscope</a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-
-                    <li class="nav-item">
-                        <form class="d-flex">
-                            <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search">
-                            <button class="btn btn-outline-light" type="submit">Search</button>
-                        </form>
-                    </li>
-
-                    {% if user.is_authenticated %}
-                        <!-- Profile Dropdown Menu -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                                <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link btn btn-outline-light ms-2" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link btn btn-primary ms-2" href="{% url 'signup' %}">Sign Up</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <div class="hero">
-        <div class="container text-center">
-            <h1>Welcome to <span class="highlight">Neuroscope</span></h1>
-            <p class="lead">Brain MRI Segmentation and Explainable AI</p>
-            <img src="{% static 'images/brain_mri.jpg' %}" class="img-fluid rounded shadow-lg" width="500">
-            <br><br>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <section class="py-5">
-      <div class="container text-center">
-        <h2 class="mb-4">Platform Features</h2>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">📤 Upload MRI</h5>
-                <p class="card-text">Upload anonymized MRI scans securely (verified users only).</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">🧠 AI Segmentation</h5>
-                <p class="card-text">View how our AI model segments tumor regions using TransUNet.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">🔍 Explainable AI</h5>
-                <p class="card-text">Transparent decision-making with SHAP and Grad-CAM.</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">📝 Feedback</h5>
-                <p class="card-text">Doctors can leave feedback on AI results after analysis.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NeuroCheck -->
-    <section class="py-5 bg-light text-center">
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container">
-        <h2 class="mb-4">🧠 NeuroCheck Assistant</h2>
-        <p>Learn about your brain health and lifestyle with our smart assistant.</p>
-        <a href="{% url 'neurocheck' %}" class="btn btn-primary">Try NeuroCheck</a>
+          <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-home"></i> Neuroscope</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                  <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                  <li class="nav-item">
+                      <form class="d-flex">
+                          <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search">
+                          <button class="btn btn-outline-light" type="submit">Search</button>
+                      </form>
+                  </li>
+                  {% if user.is_authenticated %}
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                          <i class="fas fa-user-circle"></i> {{ user.username }}
+                      </a>
+                      <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                          <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
+                          <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                      </ul>
+                  </li>
+                  {% else %}
+                  <li class="nav-item"><a class="nav-link btn btn-outline-light ms-2" href="{% url 'login' %}">Login</a></li>
+                  <li class="nav-item"><a class="nav-link btn btn-primary ms-2" href="{% url 'signup' %}">Sign Up</a></li>
+                  {% endif %}
+              </ul>
+          </div>
       </div>
-    </section>
+  </nav>
 
-    <!-- Blog Section -->
-    <section class="py-5">
-      <div class="container text-center">
-        <h2 class="mb-4">🧪 From the Blog</h2>
-        <p>Explore medical AI, research progress, and model explainability.</p>
-        <a href="{% url 'blog' %}" class="btn btn-outline-secondary">Visit Blog</a>
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="container text-center">
+      <h1 class="display-3 fw-bold">Welcome to <span class="highlight">Neuroscope</span></h1>
+      <p class="lead">Brain MRI Segmentation and Explainable AI</p>
+      <img src="{% static 'images/brain_mri.jpg' %}" class="img-fluid rounded shadow-lg" width="500">
+    </div>
+    <div class="bg-dark-banner text-white text-center py-5">
+      <h1 class="display-4 fw-bold">Empowering Radiologists with AI Transparency</h1>
+      <p class="lead">Brain MRI Segmentation with Explainability</p>
+      <a href="#features" class="btn btn-outline-light">Learn More</a>
+    </div>
+  </div>
+
+  <!-- Core Features Carousel -->
+  <section id="features" class="py-5 bg-dark text-white">
+    <div class="container">
+      <h2 class="text-center mb-4">Core Features</h2>
+      <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{% static 'images/upload_mri.jpg' %}" class="d-block w-100" alt="Upload MRI">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>📤 Upload MRI</h5>
+              <p>Explore how doctors upload anonymized MRI scans for analysis.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="{% static 'images/tumor_segmentation.jpg' %}" class="d-block w-100" alt="Tumor Segmentation">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>🧠 Tumor Segmentation</h5>
+              <p>Understand how AI detects tumors using advanced models like TransUNet.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="{% static 'images/xai.jpg' %}" class="d-block w-100" alt="Explainable AI">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>🔍 Explainable AI</h5>
+              <p>SHAP and Grad-CAM ensure model transparency and trust with radiologists.</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
       </div>
-    </section>
+    </div>
+  </section>
+
+  <!-- NeuroCheck -->
+  <section class="neuro-section">
+    <div class="container">
+      <h2>🧠 NeuroCheck Assistant</h2>
+      <p>Learn about your brain health and lifestyle with our smart assistant.</p>
+      <a href="{% url 'neurocheck' %}" class="btn btn-primary" onclick="showFeedback()">Try NeuroCheck</a>
+      <div id="feedbackMessage" class="feedback-confirmation">✅ Thank you! Redirecting you to the assistant...</div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section class="blog-section">
+    <div class="container">
+      <h2>🧪 From the Blog</h2>
+      <p>Explore medical AI, research progress, and model explainability.</p>
+      <a href="{% url 'blog' %}" class="btn btn-outline-secondary">Visit Blog</a>
+    </div>
+  </section>
 
     <!-- FAQ -->
     <section class="py-5 bg-light">
@@ -176,7 +225,17 @@
       </div>
     </section>
 
-    <!-- Bootstrap Script -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="text-center py-4 bg-dark text-white">
+        <p class="mb-0">&copy; 2025 NeuroScope. Built with ❤️ for transparent medical AI.</p>
+    </footer>
+
+  <!-- Bootstrap Script -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showFeedback() {
+      const msg = document.getElementById('feedbackMessage');
+      msg.style.display = 'block';
+    }
+  </script>
 </body>
 </html>
