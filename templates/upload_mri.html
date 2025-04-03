@@ -1,0 +1,1795 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Neuroscope Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f5f8fa;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(120deg, #8cd9c4, #a6c0e3, #c2b5e5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: var(--gradient-bg);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #24292e;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            background-color: #4a76a8;
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid white;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            height: calc(100vh - 100px);
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .menu-item:hover {
+            background-color: #f0f7ff;
+            color: var(--accent-color);
+        }
+
+        .menu-item.active {
+            background-color: #e6f2ff;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-title {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            gap: 5px;
+        }
+
+        .trend-up {
+            color: var(--success-color);
+        }
+
+        .trend-down {
+            color: var(--danger-color);
+        }
+
+        .scans-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .scans-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .scan-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .scan-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+            border-left: 4px solid #ddd;
+        }
+
+        .scan-item:hover {
+            background-color: #f0f7ff;
+        }
+
+        .scan-item.processing {
+            border-left-color: var(--warning-color);
+        }
+
+        .scan-item.completed {
+            border-left-color: var(--success-color);
+        }
+
+        .scan-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .scan-icon i {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .scan-details {
+            flex: 1;
+        }
+
+        .scan-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scan-subtitle {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scan-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .scan-tags {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .scan-tag {
+            background-color: #e6f2ff;
+            color: var(--accent-color);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .scan-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #f0f7ff;
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+.upload-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    max-height: 90vh;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none; /* hidden by default */
+    transition: all 0.3s ease;
+}
+
+.upload-card.show {
+    display: block;
+    bottom: 15%;
+}
+
+        .upload-card.minimized {
+            bottom: 10px;
+            left: 10px;
+            transform: none;
+            width: auto;
+            max-width: 250px;
+            cursor: pointer;
+            padding: 10px;
+            display: block;
+            z-index: 101;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-card.minimized .upload-card-body {
+            display: none;
+        }
+
+        .upload-card-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .upload-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-card-body {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .upload-form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .upload-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .upload-dropzone {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 15px;
+        }
+
+        .upload-dropzone:hover {
+            border-color: var(--accent-color);
+            background-color: #f0f7ff;
+        }
+
+        .upload-dropzone i {
+            font-size: 24px;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        .upload-dropzone p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .checkbox-group {
+            margin-bottom: 5px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .upload-form-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            gap: 10px;
+        }
+
+        .btn-submit {
+            background-color: var(--accent-color);
+        }
+
+        .minimize-btn, .close-btn {
+            cursor: pointer;
+            color: #999;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .minimize-btn:hover, .close-btn:hover {
+            color: #333;
+        }
+
+        .visualizations {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .visualization-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .visualization-header {
+            padding: 15px;
+            background-color: #f5f8fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .visualization-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .visualization-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-top: 1px solid #eee;
+        }
+
+        .add-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 99;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .upload-card.minimized {
+            transform: translateY(calc(100% - 50px));
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-processing {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+        }
+
+        .badge-completed {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+        }
+
+        .status-circle {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            display: inline-block;
+        }
+
+        .status-processing {
+            background-color: var(--warning-color);
+        }
+
+        .status-completed {
+            background-color: var(--success-color);
+        }
+
+        .loading-indicator {
+            width: 100%;
+            height: 6px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 70%;
+            border-radius: 3px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .modal-close {
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .result-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .result-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+        }
+
+        .result-tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .result-content {
+            margin-bottom: 20px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .result-image {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 300px;
+        }
+
+        .result-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .result-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .detail-group {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .download-section {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-pane {
+            padding: 15px 0;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .analysis-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            background-color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .filter-select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .filter-input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .search-group {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .search-input {
+            padding: 6px 10px 6px 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            color: #777;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #4a76a8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toolbar-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .toolbar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .toolbar-item:hover {
+            background-color: #f0f7ff;
+            color: var(--accent-color);
+        }
+
+        .toolbar-icon {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .toolbar-label {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .toggle-upload {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 101;
+        }
+
+        .toggle-upload:hover {
+            transform: scale(1.05);
+        }
+
+        .analysis-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .analysis-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+        }
+
+        .analysis-tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .drag-info {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .scan-preview {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+
+        .preview-name {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .file-remove {
+            color: var(--danger-color);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* New style for tab content */
+        .tab-content-container {
+            display: none;
+        }
+
+        .tab-content-container.active {
+            display: block;
+        }
+
+        /* Progress styles */
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .step-icon.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .step-icon.completed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 70px;
+            right: 70px;
+            height: 2px;
+            background-color: #f0f0f0;
+            z-index: 0;
+        }
+
+        .progress-line-inner {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 33%;
+        }
+    </style>
+</head>
+<body>
+   <!-- Navigation Bar -->
+<div class="navbar" style="position: relative;">
+  <a href="/" class="navbar-brand">
+      <span>Neuroscope</span>
+  </a>
+
+  <div class="navbar-right" style="margin-left: auto; position: relative;">
+    <div class="dropdown" style="position: relative;">
+      <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <div style="display: inline-flex; align-items: center;">
+          <div class="user-avatar" style="position: relative;">
+            {{ user.username|first|upper }}
+            <span class="notification-badge">3</span>
+          </div>
+          <span style="margin-left: 10px;">{{ user.username }}</span>
+        </div>
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+        <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+        <li><a class="dropdown-item" href="#">Notifications</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+    <!-- Scan Results Modal -->
+    <div id="scanResultModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">MRI Scan Results - Patient UID_003792</h3>
+                <span class="modal-close" onclick="closeScanModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="result-tabs">
+                    <div class="result-tab active" onclick="switchTab('segmentation')">Segmentation Results</div>
+                    <div class="result-tab" onclick="switchTab('shap')">SHAP Analysis</div>
+                    <div class="result-tab" onclick="switchTab('gradcam')">Grad-CAM Heatmaps</div>
+                    <div class="result-tab" onclick="switchTab('raw')">Raw Data</div>
+                </div>
+
+                <div id="segmentation" class="tab-content-container active">
+                    <div class="result-grid">
+                        <div class="result-image">
+                            <img src="/api/placeholder/600/400" alt="Segmented MRI Scan">
+                        </div>
+                        <div class="result-details">
+                            <div class="detail-group">
+                                <div class="detail-label">Patient ID</div>
+                                <div>UID_003792</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Scan Date</div>
+                                <div>March 30, 2025</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">AI Detection</div>
+                                <div>Potential glioma detected in temporal lobe (confidence: 87%)</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Doctor's Notes</div>
+                                <div>Follow-up examination recommended. Patient reported mild headaches and vision changes.</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Tags</div>
+                                <div class="scan-tags">
+                                    <span class="scan-tag">Brain Tumor</span>
+                                    <span class="scan-tag">Glioma</span>
+                                    <span class="scan-tag">Temporal Lobe</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="shap" class="tab-content-container">
+                    <div class="analysis-tabs">
+                        <div class="analysis-tab active">Summary Plot</div>
+                        <div class="analysis-tab">Individual Predictions</div>
+                        <div class="analysis-tab">Feature Importance</div>
+                    </div>
+                    <div class="analysis-grid">
+                        <div class="result-image">
+                            <img src="/api/placeholder/600/400" alt="SHAP Analysis">
+                        </div>
+                        <div class="result-details">
+                            <div class="detail-group">
+                                <div class="detail-label">Analysis Summary</div>
+                                <div>SHAP values indicate highest contribution from temporal lobe intensity pattern and surrounding edema. These features contributed 64% to the model's decision.</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Key Findings</div>
+                                <div>
+                                    <ul style="margin-left: 20px;">
+                                        <li>Irregular border morphology (SHAP value: 0.32)</li>
+                                        <li>Central necrosis indicators (SHAP value: 0.28)</li>
+                                        <li>Perilesional edema extent (SHAP value: 0.22)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="gradcam" class="tab-content-container">
+                    <div class="analysis-grid">
+                        <div class="result-image">
+                            <img src="/api/placeholder/600/400" alt="Grad-CAM Heatmap">
+                        </div>
+
+<div class="result-details">
+                            <div class="detail-group">
+                                <div class="detail-label">Grad-CAM Interpretation</div>
+                                <div>Heatmap highlights regions of high relevance to the model's prediction. Red areas indicate features that strongly influenced the classification decision.</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Detection Focus</div>
+                                <div>The model focused primarily on the temporal lobe region, with significant attention to the lesion boundaries and internal texture patterns.</div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Axial Slice Navigation</div>
+                                <div>
+                                    <input type="range" min="1" max="24" value="12" class="slider" id="sliceSlider" style="width: 100%;">
+                                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <span>Slice 1</span>
+                                        <span>Slice 24</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="raw" class="tab-content-container">
+                    <div class="result-grid">
+                        <div class="result-image">
+                            <img src="/api/placeholder/600/400" alt="Raw MRI Data">
+                        </div>
+                        <div class="result-details">
+                            <div class="detail-group">
+                                <div class="detail-label">Scan Parameters</div>
+                                <div>
+                                    <ul style="margin-left: 20px;">
+                                        <li>Sequence: T1-weighted</li>
+                                        <li>Slice Thickness: 1.5mm</li>
+                                        <li>Matrix: 256x256</li>
+                                        <li>TE/TR: 2.5/25ms</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="detail-group">
+                                <div class="detail-label">Download Options</div>
+                                <div>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" checked> DICOM Files
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" checked> NIfTI Format
+                                        </label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox"> BIDS Standard
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="download-section">
+                    <button class="btn btn-submit">
+                        <i class="fas fa-download"></i> Download PDF Report
+                    </button>
+                    <button class="btn">
+                        <i class="fas fa-file-export"></i> Export Raw Data
+                    </button>
+                    <button class="btn">
+                        <i class="fas fa-share-alt"></i> Share with Team
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-title">Dashboard</div>
+            <div class="menu-item active">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-brain"></i>
+                <span>My MRI Scans</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-file-medical-alt"></i>
+                <span>Patient Records</span>
+            </div>
+
+            <a href="{% url 'neurocheck' %}" class="menu-item" style="text-decoration: none;">
+                <i class="fas fa-robot"></i>
+                <span>NeuroCheck AI</span>
+            </a>
+            <div class="menu-item">
+                <i class="fas fa-microscope"></i>
+                <span>Research Tools</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & Support</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Filter Bar -->
+    <!-- Filter Bar -->
+    <form class="filter-bar" method="GET" action="{% url 'upload_mri' %}">
+        <div class="filter-group">
+            <span class="filter-label">Time Range:</span>
+            <select class="filter-select" name="time_range">
+                <option value="7">Last 7 days</option>
+                <option value="30">Last 30 days</option>
+                <option value="90">Last 90 days</option>
+                <option value="custom">Custom range</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-label">Status:</span>
+            <select class="filter-select" name="status">
+                <option value="all">All</option>
+                <option value="processing">Processing</option>
+                <option value="completed">Completed</option>
+                <option value="abnormality">Abnormality Detected</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-label">Patient:</span>
+            <input type="text" class="filter-input" placeholder="Patient ID" name="patient_id">
+        </div>
+
+        <!-- Search button -->
+        <div class="search-group">
+            <button type="submit" class="btn btn-dark" style="margin-left: 10px;">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+
+            <!-- Quick Access Toolbar -->
+            <div class="toolbar">
+                <div class="toolbar-section">
+                    <div class="toolbar-item" onclick="openUploadCard()" style="cursor: pointer;">
+                    <i class="fas fa-upload toolbar-icon"></i>
+                    <span class="toolbar-label">Upload Scan</span>
+                </div>
+
+                    <div class="toolbar-item">
+                        <i class="fas fa-file-medical toolbar-icon"></i>
+                        <span class="toolbar-label">New Patient</span>
+                    </div>
+                    <div class="toolbar-item">
+                        <i class="fas fa-database toolbar-icon"></i>
+                        <span class="toolbar-label">My Database</span>
+                    </div>
+                    <div class="toolbar-item">
+                        <i class="fas fa-chart-bar toolbar-icon"></i>
+                        <span class="toolbar-label">Reports</span>
+                    </div>
+                    <div class="toolbar-item">
+                        <i class="fas fa-users toolbar-icon"></i>
+                        <span class="toolbar-label">Team</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-title">Total Scans Processed</div>
+                    <div class="stat-value">248</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>12% increase this month</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Processing Now</div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-trend">
+                        <span>Estimated completion: 15 minutes</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Abnormalities Detected</div>
+                    <div class="stat-value">37</div>
+                    <div class="stat-trend trend-down">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>8% decrease from last month</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">AI Confidence Score</div>
+                    <div class="stat-value">94.2%</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>1.5% improvement</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Visualizations -->
+            <div class="visualizations">
+                <div class="visualization-card">
+                    <div class="visualization-header">
+                        <div class="visualization-title">Scan Volume by Type</div>
+                        <div>
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                    </div>
+                    <img src="/api/placeholder/600/300" alt="Monthly Scan Volume Chart" class="visualization-image">
+                </div>
+                <div class="visualization-card">
+                    <div class="visualization-header">
+                        <div class="visualization-title">Detection Distribution</div>
+                        <div>
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                    </div>
+                    <img src="/api/placeholder/600/300" alt="Detection Distribution Chart" class="visualization-image">
+                </div>
+            </div>
+
+            <!-- Scans Container -->
+            <div class="scans-container">
+                <!-- Currently Processing Scans -->
+                <div class="scans-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Processing Scans</h2>
+                        <div>
+                            <button class="btn btn-outline">View All</button>
+                        </div>
+                    </div>
+                    <div class="scan-list">
+                        <div class="scan-item processing">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Patient UID_005421
+                                    <span class="badge badge-processing">Processing</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-clock"></i>
+                                        <span>Started 5 minutes ago</span>
+                                    </div>
+                                </div>
+                                <div class="loading-indicator">
+                                    <div class="loading-progress"></div>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scan-item processing">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Patient UID_005422
+                                    <span class="badge badge-processing">Processing</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-clock"></i>
+                                        <span>Started 12 minutes ago</span>
+                                    </div>
+                                </div>
+                                <div class="loading-indicator">
+                                    <div class="loading-progress" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scan-item processing">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Patient UID_005423
+                                    <span class="badge badge-processing">Processing</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-clock"></i>
+                                        <span>Started 18 minutes ago</span>
+                                    </div>
+                                </div>
+                                <div class="loading-indicator">
+                                    <div class="loading-progress" style="width: 92%;"></div>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Scans -->
+                <div class="scans-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Results</h2>
+                        <div>
+                            <button class="btn btn-outline">View All</button>
+                        </div>
+                    </div>
+                    <div class="scan-list">
+                        <div class="scan-item completed">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Patient UID_003792
+                                    <span class="badge badge-completed">Completed</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>March 30, 2025</span>
+                                    </div>
+                                </div>
+                                <div class="scan-tags">
+                                    <span class="scan-tag">Brain Tumor</span>
+                                    <span class="scan-tag">Glioma</span>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn" onclick="openScanModal()">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scan-item completed">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Patient UID_003791
+                                    <span class="badge badge-completed">Completed</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>March 29, 2025</span>
+                                    </div>
+                                </div>
+                                <div class="scan-tags">
+                                    <span class="scan-tag">Normal</span>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scan-item completed">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Patient UID_003790
+                                    <span class="badge badge-completed">Completed</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span>March 28, 2025</span>
+                                    </div>
+                                </div>
+                                <div class="scan-tags">
+                                    <span class="scan-tag">Multiple Sclerosis</span>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Upload MRI Scan Card (Float at bottom right) -->
+    <Form class="upload-card minimized" id="uploadCard">
+        <div class="upload-card-header">
+            <div class="upload-card-title">
+                <i class="fas fa-upload"></i>
+                <span>Upload MRI Scan</span>
+            </div>
+            <div>
+                <span class="minimize-btn" onclick="toggleUploadCard()"><i class="fas fa-minus"></i></span>
+                <span class="close-btn" onclick="closeUploadCard()"><i class="fas fa-times"></i></span>
+            </div>
+        </div>
+        <div class="upload-card-body">
+            <div class="progress-tracker">
+                <div class="progress-line">
+                    <div class="progress-line-inner"></div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-icon active">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="step-label">Upload</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="step-label">Details</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="step-label">Options</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="step-label">Confirm</div>
+                </div>
+            </div>
+
+            <div class="upload-form-group">
+                <div class="upload-dropzone" id="dropzone" onclick="triggerFileInput()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & drop MRI files here or click to browse</p>
+                    <div class="drag-info">Supported formats: DICOM, NIfTI, BIDS</div>
+                    <input type="file" id="fileInput" style="display: none;" multiple>
+                </div>
+                <div class="scan-preview" id="scanPreview" style="display: none;">
+                    <img src="/api/placeholder/200/150" alt="MRI Scan Preview" class="preview-img">
+                    <div class="preview-name">brain_mri_scan.dcm</div>
+                    <div class="file-remove" onclick="removeFile()">Remove</div>
+                </div>
+            </div>
+
+           <div class="form-group">
+                <label for="patient-uid">Patient UID (Anonymous Identifier)</label>
+                <input type="text" id="patient-uid" placeholder="Enter anonymous patient identifier" required>
+            </div>
+
+            <div class="form-group">
+                <label for="scanType">Scan Type</label>
+                <select id="scanType" class="filter-select" style="width: 100%;">
+                    <option>T1-weighted</option>
+                    <option>T2-weighted</option>
+                    <option>FLAIR</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="doctor-notes">Doctor's Notes</label>
+                <textarea id="doctor-notes" placeholder="Add any relevant notes or observations about this scan"></textarea>
+            </div>
+
+            <div class="form-group">
+           <label>Tags/Labels</label>
+                 <div class="tags-input" id="tags-input">
+                 <input type="text" placeholder="Add tags and press Enter (e.g., Brain Tumor, Neurological Disorder)">
+             </div>
+             </div>
+
+            <div class="upload-form-group">
+                <label>Analysis Options</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" checked> Segmentation
+                    </label>
+                </div>
+
+                <div class="checkbox-group">
+                <div class="processing-options">
+        <h3>Processing Options</h3>
+        <div class="checkbox-group">
+            <label class="checkbox-label">
+                <input type="checkbox" id="show-preprocessing" checked>
+                Show preprocessing steps
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="generate-shap" checked>
+                Generate SHAP explainability visualization
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="generate-gradcam" checked>
+                Generate Grad-CAM visualization
+            </label>
+        </div>
+    </div>
+        </div>
+        <div class="upload-form-footer">
+            <button class="btn">Cancel</button>
+            {% if user.profile.is_verified %}
+                 <button class="btn btn-submit">Upload & Process</button>
+            {% else %}
+                <button class="btn btn-submit" onclick="alert('⚠️ You are not verified. Please upload your certificate/license on your profile.')">Upload & Process</button>
+             {% endif %}
+
+        </div>
+    </div>
+ </div>
+    </Form>
+    <script>
+        // Toggle upload card
+    function toggleUploadCard() {
+    const card = document.getElementById('uploadCard');
+    if (card.classList.contains('minimized')) {
+        card.classList.remove('minimized');
+        card.classList.add('show');
+    } else {
+        card.classList.remove('show');
+        card.classList.add('minimized');
+    }
+}
+function openUploadCard() {
+    const card = document.getElementById('uploadCard');
+    card.style.display = 'block';
+    card.classList.remove('minimized');
+}
+
+function toggleUploadCard() {
+    const card = document.getElementById('uploadCard');
+    card.classList.toggle('minimized');
+}
+        // Close upload card
+        function closeUploadCard() {
+            const uploadCard = document.getElementById('uploadCard');
+            uploadCard.style.display = 'none';
+        }
+
+
+        // Trigger file input click
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        // Show file preview when selected
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                document.getElementById('scanPreview').style.display = 'flex';
+                document.getElementById('dropzone').style.display = 'none';
+            }
+        });
+
+        // Remove selected file
+        function removeFile() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('scanPreview').style.display = 'none';
+            document.getElementById('dropzone').style.display = 'block';
+        }
+
+        // Open scan result modal
+        function openScanModal() {
+            document.getElementById('scanResultModal').style.display = 'flex';
+        }
+
+        // Close scan result modal
+        function closeScanModal() {
+            document.getElementById('scanResultModal').style.display = 'none';
+        }
+
+        // Switch tabs in the result modal
+        function switchTab(tabId) {
+            // Hide all tab content containers
+            const tabContents = document.querySelectorAll('.tab-content-container');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show the selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Update the active tab
+            const tabs = document.querySelectorAll('.result-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Find the tab that was clicked and add the active class
+            event.target.classList.add('active');
+        }
+
+        // Close the modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('scanResultModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Handle tags input
+    const tagsInput = document.getElementById('tags-input');
+    const tagInput = tagsInput.querySelector('input');
+
+    tagInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && tagInput.value.trim() !== '') {
+            e.preventDefault();
+
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.textContent = tagInput.value.trim();
+
+            const closeBtn = document.createElement('span');
+            closeBtn.className = 'close';
+            closeBtn.textContent = '×';
+            closeBtn.addEventListener('click', function() {
+                tagsInput.removeChild(tag);
+            });
+
+            tag.appendChild(closeBtn);
+            tagsInput.insertBefore(tag, tagInput);
+            tagInput.value = '';
+        }
+    });
+
+    </script>
+ </body>
+</html>

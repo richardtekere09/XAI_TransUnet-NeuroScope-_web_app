@@ -1,77 +1,563 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Neuroscope{% endblock %}</title>
-
-    <!-- Bootstrap for styling -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <!-- FontAwesome for icons -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <title>Neuroscope Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'dashboard/css/style.css' %}">
 </head>
 <body>
-
-    <!-- ✅ Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-brain"></i> Neuroscope</a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-
-                    <li class="nav-item">
-                        <form class="d-flex">
-                            <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search">
-                            <button class="btn btn-outline-light" type="submit">Search</button>
-                        </form>
-                    </li>
-
-                    {% if user.is_authenticated %}
-                        <!-- ✅ User Profile Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user"></i> {{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link btn btn-outline-light ms-2" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link btn btn-primary ms-2" href="{% url 'signup' %}">Sign Up</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+    <div class="navbar">
+        <a href="#" class="navbar-brand">
+            <i class="fas fa-brain"></i>
+            Neuroscope
+        </a>
+        <div class="navbar-right">
+            <span class="user-greeting">Welcome, {{ request.user.get_full_name|default:request.user.username }}</span>
+            <a href="{% url 'profile' %}" class="btn btn-outline">Profile</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
         </div>
-    </nav>
-
-    <!-- ✅ Page Content Block -->
-    <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
     </div>
 
-    <!-- ✅ Footer -->
-    <footer class="text-center text-light mt-4">
-        <p>© 2024 Neuroscope. All rights reserved.</p>
-    </footer>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h3 class="sidebar-title">Dashboard</h3>
+            <div class="menu-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </div>
+            <div class="menu-item" onclick="window.location.href='{% url '/neurocheck/' %}'">
+                <i class="fas fa-brain"></i>
+                Neurocheck AI
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-file-medical"></i>
+                Reports
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-user-md"></i>
+                Patients
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-chart-line"></i>
+                Analytics
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-cog"></i>
+                Settings
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-question-circle"></i>
+                Help
+            </div>
+        </div>
 
-    <!-- Bootstrap Script -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="main-content">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-title">Total Scans</div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        12% from last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Pending Analysis</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-trend trend-down">
+                        <i class="fas fa-arrow-down"></i>
+                        5% from last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Anomalies Detected</div>
+                    <div class="stat-value">23</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        8% from last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Accuracy Rate</div>
+                    <div class="stat-value">96.4%</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        2.1% from last month
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualizations">
+                <div class="visualization-card">
+                    <div class="visualization-header">
+                        <div class="visualization-title">MRI Scan Distribution</div>
+                        <div class="visualization-options">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                    </div>
+                    <div style="height: 250px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                        <i class="fas fa-chart-pie" style="font-size: 64px; color: #3498db;"></i>
+                    </div>
+                </div>
+                <div class="visualization-card">
+                    <div class="visualization-header">
+                        <div class="visualization-title">Monthly Activity</div>
+                        <div class="visualization-options">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                    </div>
+                    <div style="height: 250px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                        <i class="fas fa-chart-line" style="font-size: 64px; color: #3498db;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scans-container">
+                <div class="scans-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Recent Scans</h3>
+                        <button class="btn btn-submit">View All</button>
+                    </div>
+                    <div class="scan-list">
+                        <div class="scan-item completed">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    MRI Scan #12453
+                                    <span class="scan-tag">Completed</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-calendar"></i>
+                                        May 15, 2023
+                                    </div>
+                                    <div>Patient: John D.</div>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scan-item processing">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    MRI Scan #12454
+                                    <span class="scan-tag">Processing</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-calendar"></i>
+                                        May 16, 2023
+                                    </div>
+                                    <div>Patient: Sarah M.</div>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scan-item completed">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    MRI Scan #12451
+                                    <span class="scan-tag">Completed</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-calendar"></i>
+                                        May 12, 2023
+                                    </div>
+                                    <div>Patient: Robert J.</div>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="scan-item completed">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    MRI Scan #12450
+                                    <span class="scan-tag">Completed</span>
+                                </div>
+                                <div class="scan-subtitle">
+                                    <div class="scan-date">
+                                        <i class="far fa-calendar"></i>
+                                        May 10, 2023
+                                    </div>
+                                    <div>Patient: Emily P.</div>
+                                </div>
+                            </div>
+                            <div class="scan-actions">
+                                <button class="action-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scans-section">
+                    <div class="section-header">
+                        <h3 class="section-title">AI Analysis Summary</h3>
+                        <button class="btn btn-submit">View Details</button>
+                    </div>
+                    <div class="scan-list">
+                        <div class="scan-item">
+                            <div class="scan-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Normal Scans
+                                </div>
+                                <div class="scan-subtitle">
+                                    133 scans detected as normal
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scan-item">
+                            <div class="scan-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Anomalies Detected
+                                </div>
+                                <div class="scan-subtitle">
+                                    23 scans with potential anomalies
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scan-item">
+                            <div class="scan-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Common Areas
+                                </div>
+                                <div class="scan-subtitle">
+                                    Frontal lobe, Temporal lobe, Cerebellum
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scan-item">
+                            <div class="scan-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="scan-details">
+                                <div class="scan-title">
+                                    Improvement Rate
+                                </div>
+                                <div class="scan-subtitle">
+                                    12% improvement in detection accuracy
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Repositioned Upload MRI scan form to bottom left -->
+    <div class="upload-card" id="uploadCard">
+        <div class="upload-card-header">
+            <div class="upload-card-title">
+                <i class="fas fa-upload"></i>
+                Upload MRI Scan
+            </div>
+            <div>
+                <span class="minimize-btn" id="minimizeBtn"><i class="fas fa-minus"></i></span>
+                <span class="close-btn" id="closeBtn"><i class="fas fa-times"></i></span>
+            </div>
+        </div>
+        <div class="upload-card-body">
+            <form id="uploadMriForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="upload-form-group">
+                    <label for="patientName">Patient Name</label>
+                    <input type="text" id="patientName" name="patientName" required>
+                </div>
+                <div class="upload-form-group">
+                    <label for="patientID">Patient ID</label>
+                    <input type="text" id="patientID" name="patientID" required>
+                </div>
+                <div class="upload-form-group">
+                    <label>MRI Scan Files</label>
+                    <div class="upload-dropzone" id="dropzone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & Drop files here or click to browse</p>
+                        <input type="file" id="mriFiles" name="mriFiles" multiple style="display: none;">
+                    </div>
+                </div>
+                <div class="upload-form-group">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" name="notes"></textarea>
+                </div>
+                <div class="upload-form-group">
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="patientConsent" required>
+                            Patient consent obtained
+                        </label>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="anonymize">
+                            Anonymize scan data
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="upload-form-footer">
+            <button type="button" class="btn" id="cancelBtn">Cancel</button>
+            <button type="button" class="btn btn-submit" id="processScanBtn">Process Scan</button>
+        </div>
+    </div>
+
+    <!-- Add button to show the upload form -->
+    <button class="add-btn" id="showUploadBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Notification container for auth messages -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="notification-message"></span>
+        </div>
+        <button id="notification-close" class="notification-close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const uploadCard = document.getElementById('uploadCard');
+    const showUploadBtn = document.getElementById('showUploadBtn');
+    const minimizeBtn = document.getElementById('minimizeBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const processScanBtn = document.getElementById('processScanBtn');
+    const dropzone = document.getElementById('dropzone');
+    const mriFilesInput = document.getElementById('mriFiles');
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notification-message');
+    const notificationClose = document.getElementById('notification-close');
+    const uploadMriForm = document.getElementById('uploadMriForm');
+
+    // Get CSRF token for AJAX requests
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Position the upload card at the bottom left
+    function positionUploadCard() {
+        uploadCard.style.right = 'auto';
+        uploadCard.style.left = '30px';
+    }
+
+    // Initialize the page
+    function init() {
+        positionUploadCard();
+        uploadCard.style.display = 'none'; // Hide upload card initially
+    }
+
+    // Show notification with message
+    function showNotification(message) {
+        notificationMessage.textContent = message;
+        notification.classList.add('show');
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            hideNotification();
+        }, 5000);
+    }
+
+    // Hide notification
+    function hideNotification() {
+        notification.classList.remove('show');
+    }
+
+    // Check if user is authorized to upload scans
+    function checkAuthorization() {
+        fetch('/dashboard/check-authorization/', {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.is_authorized) {
+                showNotification('You are not authorized to upload scans. Please verify your account in your profile.');
+                uploadCard.style.display = 'none';
+            } else {
+                uploadCard.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error checking authorization:', error);
+            showNotification('An error occurred while checking your authorization.');
+        });
+    }
+
+    // Submit the upload form
+    function submitUploadForm() {
+        // Get form data
+        const formData = new FormData(uploadMriForm);
+
+        // Send AJAX request
+        fetch('/dashboard/upload-scan/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message);
+                uploadCard.style.display = 'none';
+                resetForm();
+            } else {
+                showNotification(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error uploading scan:', error);
+            showNotification('An error occurred while uploading the scan.');
+        });
+    }
+
+    // Reset the form
+    function resetForm() {
+        uploadMriForm.reset();
+    }
+
+    // Event Listeners
+    showUploadBtn.addEventListener('click', function() {
+        checkAuthorization();
+    });
+
+    minimizeBtn.addEventListener('click', function() {
+        uploadCard.style.display = 'none';
+    });
+
+    closeBtn.addEventListener('click', function() {
+        uploadCard.style.display = 'none';
+        resetForm();
+    });
+
+    cancelBtn.addEventListener('click', function() {
+        uploadCard.style.display = 'none';
+        resetForm();
+    });
+
+    processScanBtn.addEventListener('click', function() {
+        // Check if the form is valid
+        if (uploadMriForm.checkValidity()) {
+            submitUploadForm();
+        } else {
+            // Trigger HTML5 validation
+            let submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            uploadMriForm.appendChild(submitBtn);
+            submitBtn.click();
+            uploadMriForm.removeChild(submitBtn);
+        }
+    });
+
+    notificationClose.addEventListener('click', hideNotification);
+
+    // Handle file dropzone
+    dropzone.addEventListener('click', function() {
+        mriFilesInput.click();
+    });
+
+    mriFilesInput.addEventListener('change', function() {
+        // Update dropzone to show selected files
+        if (mriFilesInput.files.length > 0) {
+            const fileList = Array.from(mriFilesInput.files).map(file => file.name).join(', ');
+            dropzone.innerHTML = `
+                <i class="fas fa-file-medical"></i>
+                <p>${fileList}</p>
+            `;
+        }
+    });
+
+    // Handle drag and drop
+    dropzone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', function() {
+        dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            mriFilesInput.files = files;
+
+            // Update dropzone to show selected files
+            const fileList = Array.from(files).map(file => file.name).join(', ');
+            dropzone.innerHTML = `
+                <i class="fas fa-file-medical"></i>
+                <p>${fileList}</p>
+            `;
+        }
+    });
+
+    // Neurocheck button redirect
+    const neurocheckButton = document.querySelector('.menu-item:nth-child(2)');
+    neurocheckButton.addEventListener('click', function() {
+        window.location.href = '/dashboard/neurocheck/';
+    });
+
+    // Initialize the page
+    init();
+});
+    </script>
+
 </body>
 </html>

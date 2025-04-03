@@ -1,263 +1,1364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NeuroCheck Assistant</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #4062BB;
+      --secondary-color: #5A7D7C;
+      --accent-color: #59C3C3;
+      --warning-color: #F45B69;
+      --light-bg: #f7f9fc;
+      --dark-text: #2D3142;
+      --light-text: #ffffff;
+      --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      --gradient-bg: linear-gradient(135deg, #203a43, #2c5364);
+    }
+
     body {
-      background: #203a43; /* Soft dark background for a calm, professional look */
+      background: var(--gradient-bg);
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
+      color: var(--dark-text);
+      min-height: 100vh;
     }
 
-    .section-title {
-      margin-top: 30px;
-      margin-bottom: 20px;
-      font-weight: 600;
-      font-size: 2em;
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 15px;
+    }
+
+    .app-header {
       text-align: center;
-      color: #212127; /* Dark color for text contrast */
-      text-transform: uppercase;
+      margin-bottom: 40px;
     }
 
-    .form-section, .chat-section {
-      background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
-      border-radius: 15px;
-      padding: 30px;
-      margin-bottom: 40px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .app-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--light-text);
+      margin-bottom: 15px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .app-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 30px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+      background-color: var(--primary-color);
+      color: var(--light-text);
+      border-bottom: none;
+      padding: 20px 25px;
+      position: relative;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .card-title i {
+      margin-right: 12px;
+      font-size: 1.8rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .card-body {
+      padding: 25px;
+    }
+
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--dark-text);
+    }
+
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 12px 15px;
+      border: 1px solid #dde1e6;
+      box-shadow: none;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(89, 195, 195, 0.25);
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       transition: all 0.3s ease;
     }
 
-    .form-section:hover, .chat-section:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    .btn-primary:hover {
+      background-color: #3557a0;
+      transform: translateY(-2px);
     }
 
     .chat-box {
-      max-height: 300px;
+      max-height: 350px;
       overflow-y: auto;
-      background-color: #f4f6f8;
-      padding: 15px;
+      background-color: var(--light-bg);
+      padding: 20px;
       border-radius: 10px;
       margin-bottom: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--secondary-color) var(--light-bg);
+    }
+
+    .chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-box::-webkit-scrollbar-track {
+      background: var(--light-bg);
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+      background-color: var(--secondary-color);
+      border-radius: 20px;
     }
 
     .chat-entry {
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 8px;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      position: relative;
+      max-width: 85%;
     }
 
     .user-msg {
-      background-color: #e0f7fa;
-      color: #00796b;
-      font-weight: bold;
+      background-color: #e7f3fe;
+      color: #2c5777;
+      margin-left: auto;
+      border-bottom-right-radius: 2px;
     }
 
     .ai-msg {
-      background-color: #e1bee7;
-      color: #512da8;
-      font-style: italic;
+      background-color: white;
+      color: var(--dark-text);
+      margin-right: auto;
+      border-bottom-left-radius: 2px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
-    .btn-submit {
+    .chat-input-container {
+      position: relative;
       margin-top: 20px;
-      background-color: #4caf50;
+    }
+
+    .chat-input {
+      padding-right: 60px;
+    }
+
+    .send-btn {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      background-color: var(--accent-color);
       border: none;
       color: white;
-      padding: 12px 20px;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
+      width: 50px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
     }
 
-    .btn-submit:hover {
-      background-color: #388e3c;
+    .send-btn:hover {
+      background-color: #4ba9a9;
+    }
+
+    .send-btn i {
+      font-size: 1.2rem;
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 8px 15px;
+      border-radius: 30px;
+      font-weight: 600;
+      margin-top: 20px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    .risk-low {
+      background-color: #dbf5e0;
+      color: #28a745;
+    }
+
+    .risk-moderate {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .risk-high {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-row {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-icon {
+      color: var(--secondary-color);
+      margin-right: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .app-title {
+        font-size: 2rem;
+      }
+
+      .chat-entry {
+        max-width: 90%;
+      }
+    }
+
+    .progress-container {
+      margin-bottom: 30px;
+    }
+
+    .progress {
+      height: 8px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      background-color: var(--accent-color);
+      transition: width 0.6s ease;
+    }
+
+    .info-card {
+      background-color: rgba(89, 195, 195, 0.1);
+      border-left: 4px solid var(--accent-color);
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .info-card p {
+      margin-bottom: 0;
+      color: var(--secondary-color);
+      font-size: 0.95rem;
+    }
+
+    .health-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .health-category {
+      padding: 15px;
+      border-radius: 10px;
+      flex: 1;
+      min-width: 120px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .category-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .category-score {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 5px 0;
+    }
+
+    .category-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0;
+    }
+
+    .recommendation-section {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #f8f9fa;
+    }
+
+    .recommendation-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+
+    .recommendation-list {
+      padding-left: 15px;
+    }
+
+    .recommendation-item {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 25px;
+    }
+
+    .recommendation-item:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--accent-color);
+    }
+
+    .tab-nav {
+      display: flex;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      scrollbar-width: none;
+    }
+
+    .tab-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 12px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid #e9ecef;
+      color: #6c757d;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      border-bottom-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .tooltip-icon {
+      margin-left: 8px;
+      font-size: 0.9rem;
+      color: #6c757d;
       cursor: pointer;
     }
 
-    .questionnaire input, .questionnaire select {
-      border-radius: 8px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      width: 100%;
+    .tooltip-text {
+      display: none;
+      position: absolute;
+      background: #333;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      width: 250px;
+      z-index: 10;
+      top: 100%;
+      left: 0;
+      margin-top: 5px;
+      font-size: 0.85rem;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.2);
     }
 
-    .questionnaire button {
-      background-color: #ff7043;
-      border-radius: 8px;
-      color: white;
-      padding: 12px 25px;
+    .form-row:hover .tooltip-text {
+      display: block;
+    }
+
+    .overall-score {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .overall-score-value {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+
+    .overall-score-label {
+      font-size: 1rem;
+      color: var(--secondary-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .chart-container {
+      height: 250px;
+      margin: 20px 0;
+    }
+
+    .score-breakdown {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
       margin-top: 20px;
     }
 
-    .questionnaire button:hover {
-      background-color: #f4511e;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
+    .brain-graphic {
+      max-width: 100%;
+      height: auto;
+      margin: 20px auto;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <div class="container py-5">
-    <h1 class="text-center mb-4 text-white">🧠 NeuroCheck Smart Health Assistant</h1>
-
-    <!-- Questionnaire Section -->
-    <div class="form-section questionnaire">
-      <h4 class="section-title">📝 Quick Brain Health Questionnaire</h4>
-      <form id="neuroForm">
-        <div class="mb-3">
-          <label for="q1" class="form-label">Do you smoke?</label>
-          <select id="q1" class="form-select">
-            <option value="no">No</option>
-            <option value="occasionally">Occasionally</option>
-            <option value="yes">Yes</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="q2" class="form-label">How many hours of sleep do you get on average?</label>
-          <input type="number" class="form-control" id="q2" min="0" max="24" required>
-        </div>
-        <div class="mb-3">
-          <label for="q3" class="form-label">Do you have a family history of neurological disorders (e.g., stroke, Alzheimer’s)?</label>
-          <select id="q3" class="form-select">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="q4" class="form-label">Have you experienced chronic headaches, confusion, or memory loss?</label>
-          <select id="q4" class="form-select">
-            <option value="no">No</option>
-            <option value="sometimes">Sometimes</option>
-            <option value="yes">Yes</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="q5" class="form-label">Do you know that sleeping with your phone near your head may increase the risk of brain issues?</label>
-          <select id="q5" class="form-select">
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="q6" class="form-label">How often do you exercise? (Per week)</label>
-          <select id="q6" class="form-select">
-            <option value="none">None</option>
-            <option value="1-2">1-2 times</option>
-            <option value="3-4">3-4 times</option>
-            <option value="5+">5+ times</option>
-          </select>
-        </div>
-        <button type="button" class="btn btn-submit" onclick="analyzeAnswers()">Submit</button>
-        <div id="riskResult" class="mt-3 fw-bold"></div>
-      </form>
+  <div class="app-container">
+    <div class="app-header">
+          <div class="position-absolute top-0 start-0 m-3">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+          </div>
+      <h1 class="app-title">🧠 NeuroCheck Smart Health Assistant</h1>
+      <p class="app-subtitle">Your comprehensive brain health monitoring and neurological disease prevention companion</p>
     </div>
 
-    <!-- Groq-Powered Q&A Section -->
-    <div class="chat-section">
-      <h4 class="section-title">💬 Ask About Brain Health</h4>
-      <div class="chat-box" id="chatBox"></div>
-      <div class="input-group mt-3">
-        <input type="text" id="userQuestion" class="form-control" placeholder="Ask a question about brain diseases...">
-        <button class="btn btn-dark" onclick="askNeuroCheck()">Ask</button>
+    <div class="row">
+      <div class="col-lg-6">
+        <!-- Questionnaire Card -->
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title"><i class="fas fa-brain"></i> Comprehensive Brain Health Assessment</h4>
+          </div>
+          <div class="card-body">
+            <div class="info-card">
+              <p><i class="fas fa-info-circle"></i> This advanced assessment evaluates multiple factors affecting your brain health across key categories. Complete all sections for a detailed analysis.</p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+              <button class="tab-btn active" onclick="openTab(event, 'lifestyle')">Lifestyle</button>
+              <button class="tab-btn" onclick="openTab(event, 'cognitive')">Cognitive</button>
+              <button class="tab-btn" onclick="openTab(event, 'medical')">Medical History</button>
+              <button class="tab-btn" onclick="openTab(event, 'nutrition')">Nutrition</button>
+            </div>
+
+            <form id="neuroForm">
+              <!-- Lifestyle Tab -->
+              <div id="lifestyle" class="tab-content active">
+                <div class="form-row">
+                  <label for="q1" class="form-label">
+                    <i class="fas fa-smoking form-icon"></i>
+                    Do you smoke tobacco products?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Smoking increases risk of stroke and accelerates cognitive decline. It damages blood vessels and reduces oxygen to the brain.</span>
+                  </label>
+                  <select id="q1" class="form-select">
+                    <option value="never">Never smoked</option>
+                    <option value="former">Former smoker (quit over 1 year ago)</option>
+                    <option value="occasionally">Occasionally (less than daily)</option>
+                    <option value="yes">Daily smoker</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q2" class="form-label">
+                    <i class="fas fa-bed form-icon"></i>
+                    How many hours of sleep do you get on average?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Sleep is essential for glymphatic system function, which clears waste products from the brain. 7-9 hours is optimal for most adults.</span>
+                  </label>
+                  <input type="number" class="form-control" id="q2" min="0" max="24" step="0.5" required>
+                </div>
+
+                <div class="form-row">
+                  <label for="q3" class="form-label">
+                    <i class="fas fa-running form-icon"></i>
+                    How often do you engage in aerobic exercise? (Per week)
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Regular exercise increases blood flow to the brain, promotes neurogenesis, and reduces inflammation, all beneficial for brain health.</span>
+                  </label>
+                  <select id="q3" class="form-select">
+                    <option value="none">None</option>
+                    <option value="1-2">1-2 times</option>
+                    <option value="3-4">3-4 times</option>
+                    <option value="5+">5+ times</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q4" class="form-label">
+                    <i class="fas fa-wine-glass-alt form-icon"></i>
+                    How would you describe your alcohol consumption?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Excessive alcohol consumption can lead to brain cell damage, memory impairment, and increased risk of dementia.</span>
+                  </label>
+                  <select id="q4" class="form-select">
+                    <option value="none">None</option>
+                    <option value="moderate">Moderate (1-2 drinks occasionally)</option>
+                    <option value="regular">Regular (3-7 drinks weekly)</option>
+                    <option value="heavy">Heavy (8+ drinks weekly)</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q5" class="form-label">
+                    <i class="fas fa-sun form-icon"></i>
+                    How much time do you typically spend outdoors daily?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Sunlight exposure helps regulate circadian rhythms and vitamin D production, both important for brain health and mood regulation.</span>
+                  </label>
+                  <select id="q5" class="form-select">
+                    <option value="minimal">Less than 15 minutes</option>
+                    <option value="moderate">15-30 minutes</option>
+                    <option value="adequate">30-60 minutes</option>
+                    <option value="substantial">More than 60 minutes</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Cognitive Tab -->
+              <div id="cognitive" class="tab-content">
+                <div class="form-row">
+                  <label for="q6" class="form-label">
+                    <i class="fas fa-head-side-virus form-icon"></i>
+                    Have you experienced memory issues that interfere with daily life?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Persistent memory problems affecting daily activities could be an early sign of cognitive decline and should be evaluated.</span>
+                  </label>
+                  <select id="q6" class="form-select">
+                    <option value="no">No issues</option>
+                    <option value="mild">Mild (occasional forgetfulness)</option>
+                    <option value="moderate">Moderate (regular forgetfulness)</option>
+                    <option value="significant">Significant (disruptive to daily life)</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q7" class="form-label">
+                    <i class="fas fa-puzzle-piece form-icon"></i>
+                    How often do you engage in mentally stimulating activities? (puzzles, reading, learning)
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Cognitive stimulation builds neural reserves and creates cognitive resilience, potentially delaying onset of dementia symptoms.</span>
+                  </label>
+                  <select id="q7" class="form-select">
+                    <option value="rarely">Rarely or never</option>
+                    <option value="occasionally">Occasionally (1-2 times weekly)</option>
+                    <option value="regularly">Regularly (3-5 times weekly)</option>
+                    <option value="daily">Daily</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q8" class="form-label">
+                    <i class="fas fa-balance-scale form-icon"></i>
+                    Have you experienced changes in mood or emotional regulation?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Mood disorders can both affect and be affected by brain health. Depression is linked to increased risk of cognitive decline.</span>
+                  </label>
+                  <select id="q8" class="form-select">
+                    <option value="no">No changes</option>
+                    <option value="mild">Mild changes</option>
+                    <option value="moderate">Moderate changes</option>
+                    <option value="severe">Severe changes</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q9" class="form-label">
+                    <i class="fas fa-users form-icon"></i>
+                    How would you describe your level of social engagement?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Regular social interaction provides cognitive stimulation and emotional support, both protective factors against cognitive decline.</span>
+                  </label>
+                  <select id="q9" class="form-select">
+                    <option value="isolated">Socially isolated (rare interaction)</option>
+                    <option value="limited">Limited interaction (weekly)</option>
+                    <option value="moderate">Moderate interaction (several times weekly)</option>
+                    <option value="active">Active social life (daily interactions)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Medical History Tab -->
+              <div id="medical" class="tab-content">
+                <div class="form-row">
+                  <label for="q10" class="form-label">
+                    <i class="fas fa-dna form-icon"></i>
+                    Do you have a family history of neurological disorders?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Family history of conditions like Alzheimer's, Parkinson's, or stroke can indicate increased genetic risk factors.</span>
+                  </label>
+                  <select id="q10" class="form-select">
+                    <option value="none">None known</option>
+                    <option value="distant">Distant relatives only</option>
+                    <option value="immediate">Immediate family (parents, siblings)</option>
+                    <option value="multiple">Multiple family members affected</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q11" class="form-label">
+                    <i class="fas fa-heartbeat form-icon"></i>
+                    Do you have any of these cardiovascular conditions?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Cardiovascular health directly impacts brain health. Conditions affecting blood flow can increase risk of stroke and vascular dementia.</span>
+                  </label>
+                  <select id="q11" class="form-select">
+                    <option value="none">None</option>
+                    <option value="hypertension">Hypertension (high blood pressure)</option>
+                    <option value="cholesterol">High cholesterol</option>
+                    <option value="multiple">Multiple cardiovascular conditions</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q12" class="form-label">
+                    <i class="fas fa-weight form-icon"></i>
+                    How would you describe your body weight status?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Obesity is linked to inflammation and increased risk of cognitive impairment. Maintaining healthy weight supports brain health.</span>
+                  </label>
+                  <select id="q12" class="form-select">
+                    <option value="underweight">Underweight</option>
+                    <option value="healthy">Healthy weight</option>
+                    <option value="overweight">Overweight</option>
+                    <option value="obese">Obese</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q13" class="form-label">
+                    <i class="fas fa-dizzy form-icon"></i>
+                    Have you ever experienced a concussion or head injury?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Traumatic brain injuries can have cumulative effects and increase risk of neurodegenerative conditions later in life.</span>
+                  </label>
+                  <select id="q13" class="form-select">
+                    <option value="never">Never</option>
+                    <option value="mild">Mild (one minor concussion)</option>
+                    <option value="moderate">Moderate (multiple or one significant injury)</option>
+                    <option value="severe">Severe (resulted in loss of consciousness)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Nutrition Tab -->
+              <div id="nutrition" class="tab-content">
+                <div class="form-row">
+                  <label for="q14" class="form-label">
+                    <i class="fas fa-apple-alt form-icon"></i>
+                    How many servings of fruits and vegetables do you consume daily?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Fruits and vegetables contain antioxidants that help protect brain cells from oxidative stress and inflammation.</span>
+                  </label>
+                  <select id="q14" class="form-select">
+                    <option value="minimal">0-1 servings</option>
+                    <option value="low">2-3 servings</option>
+                    <option value="adequate">4-5 servings</option>
+                    <option value="optimal">6+ servings</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q15" class="form-label">
+                    <i class="fas fa-fish form-icon"></i>
+                    How often do you consume omega-3 rich foods? (fatty fish, walnuts, flaxseeds)
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Omega-3 fatty acids are critical for brain structure and function. They have anti-inflammatory properties and support neuron health.</span>
+                  </label>
+                  <select id="q15" class="form-select">
+                    <option value="rarely">Rarely or never</option>
+                    <option value="occasionally">Occasionally (1-2 times monthly)</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="frequently">Multiple times weekly</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q16" class="form-label">
+                    <i class="fas fa-hamburger form-icon"></i>
+                    How often do you consume processed foods and added sugars?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Highly processed foods and added sugars can promote inflammation and negatively impact cognitive function and brain health.</span>
+                  </label>
+                  <select id="q16" class="form-select">
+                    <option value="rarely">Rarely or never</option>
+                    <option value="occasionally">Occasionally (1-3 times weekly)</option>
+                    <option value="frequently">Frequently (4-6 times weekly)</option>
+                    <option value="daily">Daily</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <label for="q17" class="form-label">
+                    <i class="fas fa-tint form-icon"></i>
+                    How much water do you drink daily?
+                    <i class="fas fa-question-circle tooltip-icon"></i>
+                    <span class="tooltip-text">Proper hydration is essential for optimal brain function. Even mild dehydration can impair cognitive performance and focus.</span>
+                  </label>
+                  <select id="q17" class="form-select">
+                    <option value="insufficient">Less than 4 cups</option>
+                    <option value="moderate">4-6 cups</option>
+                    <option value="adequate">7-8 cups</option>
+                    <option value="optimal">More than 8 cups</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="text-center mt-4">
+                <button type="button" class="btn btn-primary" onclick="analyzeAnswers()">
+                  <i class="fas fa-brain me-2"></i> Generate Comprehensive Analysis
+                </button>
+              </div>
+
+              <div id="resultContainer" class="mt-4" style="display: none;">
+                <h4 class="text-center mb-4">Your Brain Health Profile</h4>
+
+                <div class="overall-score">
+                  <div class="overall-score-value" id="overallScore">--</div>
+                  <div class="overall-score-label">Brain Health Score</div>
+                </div>
+
+                <div class="progress-container">
+                  <div class="progress">
+                    <div id="overallProgressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <div class="health-categories">
+                  <div class="health-category">
+                    <div class="category-icon"><i class="fas fa-running" style="color: #4062BB;"></i></div>
+                    <div class="category-score" id="lifestyleScore">--</div>
+                    <div class="category-title">Lifestyle</div>
+                  </div>
+                  <div class="health-category">
+                    <div class="category-icon"><i class="fas fa-brain" style="color: #59C3C3;"></i></div>
+                    <div class="category-score" id="cognitiveScore">--</div>
+                    <div class="category-title">Cognitive</div>
+                  </div>
+                  <div class="health-category">
+                    <div class="category-icon"><i class="fas fa-heartbeat" style="color: #F45B69;"></i></div>
+                    <div class="category-score" id="medicalScore">--</div>
+                    <div class="category-title">Medical</div>
+                  </div>
+                  <div class="health-category">
+                    <div class="category-icon"><i class="fas fa-apple-alt" style="color: #5A7D7C;"></i></div>
+                    <div class="category-score" id="nutritionScore">--</div>
+                    <div class="category-title">Nutrition</div>
+                  </div>
+                </div>
+
+                <div id="riskLevelContainer" class="text-center my-4">
+                  <span id="riskLevel" class="risk-badge">Analyzing...</span>
+                </div>
+
+                <div class="recommendation-section">
+                  <h5 class="recommendation-title"><i class="fas fa-clipboard-list me-2"></i>Personalized Recommendations</h5>
+                  <div id="recommendations" class="recommendation-list">
+                    <!-- Recommendations will be populated here -->
+                  </div>
+                </div>
+
+                <div class="score-breakdown mt-4">
+                  <h5 class="mb-3">Detailed Analysis</h5>
+                  <div id="detailedAnalysis">
+                    <!-- Detailed analysis will be populated here -->
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <!-- AI Assistant Card -->
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title"><i class="fas fa-robot"></i> NeuroCheck AI Assistant</h4>
+          </div>
+          <div class="card-body">
+            <div class="info-card">
+              <p><i class="fas fa-info-circle"></i> Ask questions about your brain health, neurological conditions, or receive personalized advice based on your assessment results.</p>
+            </div>
+            <div class="chat-box" id="chatBox">
+              <div class="chat-entry ai-msg">
+                Hello! I'm your NeuroCheck AI Assistant. I can answer questions about brain health, provide information on neurological conditions, or offer personalized advice based on your assessment. How can I help you today?
+              </div>
+            </div>
+            <div class="chat-input-container">
+              <input type="text" class="form-control chat-input" id="chatInput" placeholder="Ask me anything about brain health...">
+              <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Brain Insights Card -->
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title"><i class="fas fa-lightbulb"></i> Brain Health Insights</h4>
+          </div>
+          <div class="card-body">
+            <div id="brainInsights">
+              <p class="mb-3">Complete your assessment to receive personalized brain health insights and see which areas might need attention.</p>
+              <div class="info-card">
+                <p><i class="fas fa-info-circle"></i> Your brain health is influenced by multiple factors including lifestyle, genetics, nutrition, and medical history. Our comprehensive assessment evaluates all these dimensions.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script>
-    function analyzeAnswers() {
-      const q1 = document.getElementById("q1").value;
-      const q2 = parseInt(document.getElementById("q2").value);
-      const q3 = document.getElementById("q3").value;
-      const q4 = document.getElementById("q4").value;
-      const q5 = document.getElementById("q5").value;
-      const q6 = document.getElementById("q6").value;
 
-      let score = 0;
-      if (q1 !== 'no') score++;
-      if (q2 < 6 || q2 > 9) score++;
-      if (q3 === 'yes') score++;
-      if (q4 !== 'no') score++;
-      if (q5 === 'yes') score++;  // Impactful habit
-      if (q6 === 'none') score++;  // Lack of exercise
-
-      const result = document.getElementById("riskResult");
-      if (score <= 1) {
-        result.innerText = "🟢 Your answers suggest a low risk. Keep up your healthy habits!";
-      } else if (score === 2) {
-        result.innerText = "🟡 Moderate risk. Consider consulting a doctor if symptoms persist.";
-      } else {
-        result.innerText = "🔴 High risk detected. Please consult a neurologist for further evaluation.";
+    // Tab functionality
+    function openTab(evt, tabName) {
+      let tabContents = document.getElementsByClassName("tab-content");
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove("active");
       }
+
+      let tabButtons = document.getElementsByClassName("tab-btn");
+      for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+      }
+
+      document.getElementById(tabName).classList.add("active");
+      evt.currentTarget.classList.add("active");
     }
 
-<!-- neurocheck.html -->
-    function askNeuroCheck() {
-        const userInput = document.getElementById('userQuestion').value;
-        if (!userInput.trim()) {
-            alert('Please enter a question.');
-            return;
-        }
+    // Chat functionality
+    function sendMessage() {
+      const userInput = document.getElementById('chatInput').value;
+      if (!userInput.trim()) {
+        return;
+      }
 
-        const chatBox = document.getElementById('chatBox');
-        chatBox.innerHTML += `<div class="chat-entry user-msg">You: ${userInput}</div>`;
+      const chatBox = document.getElementById('chatBox');
+      chatBox.innerHTML += `<div class="chat-entry user-msg">${userInput}</div>`;
 
-        fetch('/neurocheck_chat/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({ message: userInput })
-        })
-        .then(response => response.json())
-        .then(data => {
-            const reply = data.reply || 'I am unable to provide a response at this time.';
-            chatBox.innerHTML += `<div class="chat-entry ai-msg">NeuroCheck: ${reply}</div>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            chatBox.innerHTML += `<div class="chat-entry ai-msg">NeuroCheck: An error occurred. Please try again later.</div>`;
-        });
+      // Show typing indicator
+      const typingIndicator = document.createElement('div');
+      typingIndicator.className = 'chat-entry ai-msg';
+      typingIndicator.id = 'typing-indicator';
+      typingIndicator.innerHTML = '<i class="fas fa-ellipsis-h"></i> Thinking...';
+      chatBox.appendChild(typingIndicator);
 
-        document.getElementById('userQuestion').value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Clear input
+      document.getElementById('chatInput').value = '';
+
+      fetch('/neurocheck_chat/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ message: userInput })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Remove typing indicator
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) chatBox.removeChild(indicator);
+
+        const reply = data.reply || 'I am unable to provide a response at this time.';
+        chatBox.innerHTML += `<div class="chat-entry ai-msg">${reply}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      })
+      .catch(error => {
+        // Remove typing indicator
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) chatBox.removeChild(indicator);
+
+        console.error('Error:', error);
+        chatBox.innerHTML += `<div class="chat-entry ai-msg"><i class="fas fa-exclamation-circle"></i> An error occurred. Please try again later.</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
     }
 
     function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
-        return cookieValue;
+      }
+      return cookieValue;
     }
 
     document.getElementById('userQuestion').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            askNeuroCheck();
-        }
+      if (e.key === 'Enter') {
+        askNeuroCheck();
+      }
     });
 
-</script>
+    // Score calculation and analysis
+    function analyzeAnswers() {
+      // Retrieve values from form
+      const q1 = document.getElementById('q1').value; // Smoking
+      const q2 = parseFloat(document.getElementById('q2').value); // Sleep hours
+      const q3 = document.getElementById('q3').value; // Exercise
+      const q4 = document.getElementById('q4').value; // Alcohol
+      const q5 = document.getElementById('q5').value; // Outdoor time
+      const q6 = document.getElementById('q6').value; // Memory issues
+      const q7 = document.getElementById('q7').value; // Mental activities
+      const q8 = document.getElementById('q8').value; // Mood changes
+      const q9 = document.getElementById('q9').value; // Social engagement
+      const q10 = document.getElementById('q10').value; // Family history
+      const q11 = document.getElementById('q11').value; // Cardiovascular
+      const q12 = document.getElementById('q12').value; // Weight
+      const q13 = document.getElementById('q13').value; // Head injury
+      const q14 = document.getElementById('q14').value; // Fruits/veggies
+      const q15 = document.getElementById('q15').value; // Omega-3
+      const q16 = document.getElementById('q16').value; // Processed foods
+      const q17 = document.getElementById('q17').value; // Water intake
 
+      // Calculate category scores (0-100 scale)
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      // Lifestyle score calculation
+      let lifestyleScore = 0;
+
+      // Smoking (q1)
+      if (q1 === 'never') lifestyleScore += 25;
+      else if (q1 === 'former') lifestyleScore += 20;
+      else if (q1 === 'occasionally') lifestyleScore += 10;
+      else if (q1 === 'yes') lifestyleScore += 0;
+
+      // Sleep (q2)
+      if (q2 >= 7 && q2 <= 9) lifestyleScore += 25;
+      else if ((q2 >= 6 && q2 < 7) || (q2 > 9 && q2 <= 10)) lifestyleScore += 20;
+      else if ((q2 >= 5 && q2 < 6) || (q2 > 10 && q2 <= 11)) lifestyleScore += 10;
+      else lifestyleScore += 5;
+
+      // Exercise (q3)
+      if (q3 === '5+') lifestyleScore += 25;
+      else if (q3 === '3-4') lifestyleScore += 20;
+      else if (q3 === '1-2') lifestyleScore += 15;
+      else if (q3 === 'none') lifestyleScore += 0;
+
+      // Alcohol (q4)
+      if (q4 === 'none' || q4 === 'moderate') lifestyleScore += 15;
+      else if (q4 === 'regular') lifestyleScore += 10;
+      else if (q4 === 'heavy') lifestyleScore += 0;
+
+      // Outdoor time (q5)
+      if (q5 === 'substantial') lifestyleScore += 10;
+      else if (q5 === 'adequate') lifestyleScore += 8;
+      else if (q5 === 'moderate') lifestyleScore += 5;
+      else if (q5 === 'minimal') lifestyleScore += 2;
+
+      // Cognitive score calculation
+      let cognitiveScore = 0;
+
+      // Memory issues (q6)
+      if (q6 === 'no') cognitiveScore += 25;
+      else if (q6 === 'mild') cognitiveScore += 20;
+      else if (q6 === 'moderate') cognitiveScore += 10;
+      else if (q6 === 'significant') cognitiveScore += 0;
+
+      // Mental activities (q7)
+      if (q7 === 'daily') cognitiveScore += 25;
+      else if (q7 === 'regularly') cognitiveScore += 20;
+      else if (q7 === 'occasionally') cognitiveScore += 10;
+      else if (q7 === 'rarely') cognitiveScore += 0;
+
+      // Mood changes (q8)
+      if (q8 === 'no') cognitiveScore += 25;
+      else if (q8 === 'mild') cognitiveScore += 20;
+      else if (q8 === 'moderate') cognitiveScore += 10;
+      else if (q8 === 'severe') cognitiveScore += 0;
+
+      // Social engagement (q9)
+      if (q9 === 'active') cognitiveScore += 25;
+      else if (q9 === 'moderate') cognitiveScore += 20;
+      else if (q9 === 'limited') cognitiveScore += 10;
+      else if (q9 === 'isolated') cognitiveScore += 0;
+
+      // Medical history score calculation
+      let medicalScore = 0;
+
+      // Family history (q10)
+      if (q10 === 'none') medicalScore += 25;
+      else if (q10 === 'distant') medicalScore += 20;
+      else if (q10 === 'immediate') medicalScore += 10;
+      else if (q10 === 'multiple') medicalScore += 5;
+
+      // Cardiovascular (q11)
+      if (q11 === 'none') medicalScore += 25;
+      else if (q11 === 'hypertension' || q11 === 'cholesterol') medicalScore += 15;
+      else if (q11 === 'multiple') medicalScore += 5;
+
+      // Weight (q12)
+      if (q12 === 'healthy') medicalScore += 25;
+      else if (q12 === 'overweight') medicalScore += 15;
+      else if (q12 === 'underweight' || q12 === 'obese') medicalScore += 5;
+
+      // Head injury (q13)
+      if (q13 === 'never') medicalScore += 25;
+      else if (q13 === 'mild') medicalScore += 15;
+      else if (q13 === 'moderate') medicalScore += 10;
+      else if (q13 === 'severe') medicalScore += 0;
+
+      // Nutrition score calculation
+      let nutritionScore = 0;
+
+      // Fruits and vegetables (q14)
+      if (q14 === 'optimal') nutritionScore += 25;
+      else if (q14 === 'adequate') nutritionScore += 20;
+      else if (q14 === 'low') nutritionScore += 10;
+      else if (q14 === 'minimal') nutritionScore += 0;
+
+      // Omega-3 (q15)
+      if (q15 === 'frequently') nutritionScore += 25;
+      else if (q15 === 'weekly') nutritionScore += 20;
+      else if (q15 === 'occasionally') nutritionScore += 10;
+      else if (q15 === 'rarely') nutritionScore += 0;
+
+      // Processed foods (q16)
+      if (q16 === 'rarely') nutritionScore += 25;
+      else if (q16 === 'occasionally') nutritionScore += 20;
+      else if (q16 === 'frequently') nutritionScore += 10;
+      else if (q16 === 'daily') nutritionScore += 0;
+
+      // Water intake (q17)
+      if (q17 === 'optimal') nutritionScore += 25;
+      else if (q17 === 'adequate') nutritionScore += 20;
+      else if (q17 === 'moderate') nutritionScore += 15;
+      else if (q17 === 'insufficient') nutritionScore += 5;
+
+      // Calculate overall score (average of category scores)
+      const overallScore = Math.round((lifestyleScore + cognitiveScore + medicalScore + nutritionScore) / 4);
+
+      // Add this to your analyzeAnswers() function after calculating scores
+      function updateBrainVisualization(lifestyle, cognitive, medical, nutrition) {
+        // Create brain visualization with radar chart
+        const ctx = document.getElementById('brainRadarChart').getContext('2d');
+        const brainChart = new Chart(ctx, {
+          type: 'radar',
+          data: {
+            labels: ['Lifestyle', 'Cognitive', 'Medical', 'Nutrition'],
+            datasets: [{
+              label: 'Your Brain Health Profile',
+              data: [lifestyle, cognitive, medical, nutrition],
+              backgroundColor: 'rgba(89, 195, 195, 0.2)',
+              borderColor: 'rgba(89, 195, 195, 1)',
+              borderWidth: 2,
+              pointBackgroundColor: '#4062BB',
+              pointRadius: 5
+            }, {
+              label: 'Optimal Profile',
+              data: [100, 100, 100, 100],
+              backgroundColor: 'rgba(64, 98, 187, 0.1)',
+              borderColor: 'rgba(64, 98, 187, 0.5)',
+              borderWidth: 1,
+              pointRadius: 0,
+              borderDash: [5, 5]
+            }]
+          },
+          options: {
+            scales: {
+              r: {
+                angleLines: {
+                  display: true
+                },
+                suggestedMin: 0,
+                suggestedMax: 100
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }
+        });
+      }
+      // Display scores
+      document.getElementById('lifestyleScore').textContent = lifestyleScore;
+      document.getElementById('cognitiveScore').textContent = cognitiveScore;
+      document.getElementById('medicalScore').textContent = medicalScore;
+      document.getElementById('nutritionScore').textContent = nutritionScore;
+      document.getElementById('overallScore').textContent = overallScore;
+
+      // Update progress bar
+      document.getElementById('overallProgressBar').style.width = overallScore + '%';
+
+      // Determine risk level
+      let riskLevel, riskClass;
+      if (overallScore >= 80) {
+        riskLevel = "Low Risk";
+        riskClass = "risk-low";
+      } else if (overallScore >= 60) {
+        riskLevel = "Moderate Risk";
+        riskClass = "risk-moderate";
+      } else {
+        riskLevel = "Higher Risk";
+        riskClass = "risk-high";
+      }
+
+      // Display risk level
+      const riskElement = document.getElementById('riskLevel');
+      riskElement.textContent = riskLevel;
+      riskElement.className = 'risk-badge ' + riskClass;
+
+      // Generate recommendations based on lowest scoring categories
+      const recommendations = [];
+
+      // Add category-specific recommendations
+      if (lifestyleScore < 70) {
+        if (q1 === 'yes' || q1 === 'occasionally') {
+          recommendations.push("Consider a smoking cessation program. Even reducing smoking can have immediate benefits for brain health.");
+        }
+
+        if (q2 < 6 || q2 > 9) {
+          recommendations.push("Prioritize improved sleep hygiene. Aim for 7-9 hours of quality sleep nightly to support glymphatic system function and memory consolidation.");
+        }
+
+        if (q3 === 'none' || q3 === '1-2') {
+          recommendations.push("Increase physical activity to at least 150 minutes of moderate-intensity exercise per week, which improves cerebral blood flow and neurogenesis.");
+        }
+
+        if (q4 === 'heavy') {
+          recommendations.push("Reduce alcohol consumption to moderate levels (1 drink daily for women, 2 for men) or consider abstaining completely for optimal brain health.");
+        }
+      }
+
+      if (cognitiveScore < 70) {
+        if (q6 === 'moderate' || q6 === 'significant') {
+          recommendations.push("Consult with a healthcare professional about your memory concerns, as early intervention is key for cognitive health issues.");
+        }
+
+        if (q7 === 'rarely' || q7 === 'occasionally') {
+          recommendations.push("Engage in daily cognitive stimulation through puzzles, reading, learning new skills, or playing strategy games to build cognitive reserve.");
+        }
+
+        if (q9 === 'isolated' || q9 === 'limited') {
+          recommendations.push("Increase social engagement through community activities, classes, volunteering, or regular contact with family and friends, which provides cognitive stimulation and emotional support.");
+        }
+      }
+
+      if (medicalScore < 70) {
+        if (q10 === 'immediate' || q10 === 'multiple') {
+          recommendations.push("Given your family history of neurological disorders, consider more frequent cognitive screenings and be vigilant about modifiable risk factors.");
+        }
+
+        if (q11 !== 'none') {
+          recommendations.push("Prioritize cardiovascular health through diet, exercise, and medication if prescribed. What's good for your heart is good for your brain.");
+        }
+
+        if (q12 === 'overweight' || q12 === 'obese') {
+          recommendations.push("Work toward achieving a healthy weight through balanced nutrition and regular physical activity to reduce inflammation and improve brain health.");
+        }
+      }
+
+      if (nutritionScore < 70) {
+        if (q14 === 'minimal' || q14 === 'low') {
+          recommendations.push("Increase consumption of colorful fruits and vegetables to at least 5 servings daily to benefit from their neuroprotective antioxidants and phytonutrients.");
+        }
+
+        if (q15 === 'rarely' || q15 === 'occasionally') {
+          recommendations.push("Include more omega-3 rich foods like fatty fish, walnuts, and flaxseeds in your diet weekly, or consider a high-quality supplement after consulting a healthcare provider.");
+        }
+
+        if (q16 === 'daily' || q16 === 'frequently') {
+          recommendations.push("Reduce consumption of processed foods and added sugars, which can promote inflammation and negatively impact brain health. Focus on whole, unprocessed foods.");
+        }
+
+        if (q17 === 'insufficient' || q17 === 'moderate') {
+          recommendations.push("Increase water intake to at least 8 cups daily, as even mild dehydration can impair cognitive function and concentration.");
+        }
+      }
+
+      // Limit to top 5 recommendations if there are many
+      if (recommendations.length > 5) {
+        recommendations.length = 5;
+      }
+
+      // Add general recommendation if few specific ones
+      if (recommendations.length < 3) {
+        recommendations.push("Consider adopting a Mediterranean or MIND diet pattern, which has been associated with reduced risk of cognitive decline.");
+        recommendations.push("Practice stress-reduction techniques like meditation, deep breathing, or mindfulness, as chronic stress can damage brain structures involved in memory.");
+      }
+
+      // Display recommendations
+      const recommendationsContainer = document.getElementById('recommendations');
+      recommendationsContainer.innerHTML = '';
+      recommendations.forEach(rec => {
+        const recItem = document.createElement('div');
+        recItem.className = 'recommendation-item';
+        recItem.textContent = rec;
+        recommendationsContainer.appendChild(recItem);
+      });
+
+      // Generate detailed analysis
+      let analysisHTML = '<p>Based on your responses, here\'s a detailed analysis of your brain health profile:</p>';
+
+      // Add category analyses
+      analysisHTML += `<h6 class="mt-3">Lifestyle Factors (${lifestyleScore}/100)</h6>`;
+      if (lifestyleScore >= 80) {
+        analysisHTML += '<p>Your lifestyle habits strongly support brain health. Continue maintaining these positive behaviors.</p>';
+      } else if (lifestyleScore >= 60) {
+        analysisHTML += '<p>Your lifestyle provides moderate support for brain health. There are opportunities to enhance these habits for better cognitive protection.</p>';
+      } else {
+        analysisHTML += '<p>Your current lifestyle patterns may present challenges to optimal brain health. Making targeted changes could significantly improve your cognitive trajectory.</p>';
+      }
+
+      analysisHTML += `<h6 class="mt-3">Cognitive Health (${cognitiveScore}/100)</h6>`;
+      if (cognitiveScore >= 80) {
+        analysisHTML += '<p>Your cognitive engagement patterns are excellent, helping build and maintain cognitive reserve.</p>';
+      } else if (cognitiveScore >= 60) {
+        analysisHTML += '<p>Your cognitive engagement provides moderate protection. Increasing mental stimulation and social activity could further enhance resilience.</p>';
+      } else {
+        analysisHTML += '<p>Your cognitive engagement patterns suggest opportunities for improvement. Increased mental stimulation, social interaction, and emotional wellbeing focus could benefit your brain health significantly.</p>';
+      }
+
+      analysisHTML += `<h6 class="mt-3">Medical Factors (${medicalScore}/100)</h6>`;
+      if (medicalScore >= 80) {
+        analysisHTML += '<p>Your medical profile suggests lower risk factors for neurological conditions.</p>';
+      } else if (medicalScore >= 60) {
+        analysisHTML += '<p>Your medical profile shows some risk factors that merit attention. Managing these conditions proactively can help protect brain health.</p>';
+      } else {
+        analysisHTML += '<p>Your medical profile indicates several risk factors for cognitive decline. Working closely with healthcare providers to manage these conditions is important for brain health.</p>';
+      }
+
+      analysisHTML += `<h6 class="mt-3">Nutritional Support (${nutritionScore}/100)</h6>`;
+      if (nutritionScore >= 80) {
+        analysisHTML += '<p>Your diet provides excellent nutritional support for brain health.</p>';
+      } else if (nutritionScore >= 60) {
+        analysisHTML += '<p>Your diet provides moderate support for brain health. Making targeted improvements could enhance neuroprotection.</p>';
+      } else {
+        analysisHTML += '<p>Your current dietary patterns may not optimally support brain health. Focusing on brain-healthy foods could provide significant benefits.</p>';
+      }
+
+      // Display detailed analysis
+      document.getElementById('detailedAnalysis').innerHTML = analysisHTML;
+
+      // Update brain insights with specific content based on scores
+      let insightsHTML = '<p class="mb-3">Based on your assessment, here are specific insights about your brain health:</p>';
+
+      // Add overall insights based on scores
+      if (overallScore >= 80) {
+        insightsHTML += `
+          <div class="info-card mb-3">
+            <p><i class="fas fa-award"></i> <strong>Outstanding Brain Health Profile:</strong> Your responses indicate excellent brain health practices across multiple domains. You're already implementing many evidence-based strategies to protect cognitive function.</p>
+          </div>
+          <p>Continue your current practices while staying informed about emerging research in brain health. Your proactive approach puts you in an excellent position to maintain cognitive vitality.</p>`;
+      } else if (overallScore >= 60) {
+        insightsHTML += `
+          <div class="info-card mb-3">
+            <p><i class="fas fa-shield-alt"></i> <strong>Solid Foundation with Room for Growth:</strong> Your brain health profile shows good practices in several areas, with specific opportunities for enhancement that could significantly improve your cognitive resilience.</p>
+          </div>
+          <p>Focus on the recommendations provided to strengthen your brain health profile. Many of these changes can have synergistic effects, where improvements in one area amplify benefits in others.</p>`;
+      } else {
+        insightsHTML += `
+          <div class="info-card mb-3">
+            <p><i class="fas fa-exclamation-triangle"></i> <strong>Opportunity for Significant Improvement:</strong> Your assessment indicates several areas where changes could substantially benefit your brain health and potentially reduce risk of cognitive decline.</p>
+          </div>
+          <p>The good news is that many risk factors for cognitive decline are modifiable. Starting with small, sustainable changes in the recommended areas can put you on a path to better brain health.</p>`;
+      }
+
+      // Add specific insights for the lowest scoring category
+      const lowestScore = Math.min(lifestyleScore, cognitiveScore, medicalScore, nutritionScore);
+      if (lowestScore === lifestyleScore) {
+        insightsHTML += `
+          <div class="recommendation-section">
+            <h5 class="recommendation-title"><i class="fas fa-lightbulb me-2"></i>Focus Area: Lifestyle Habits</h5>
+            <p>Your assessment indicates lifestyle factors represent your greatest opportunity for brain health improvement. Research shows that changes in physical activity, sleep quality, and substance use can have profound effects on brain structure and function, even when started later in life.</p>
+          </div>`;
+      } else if (lowestScore === cognitiveScore) {
+        insightsHTML += `
+          <div class="recommendation-section">
+            <h5 class="recommendation-title"><i class="fas fa-lightbulb me-2"></i>Focus Area: Cognitive Engagement</h5>
+            <p>Your assessment suggests cognitive stimulation and social engagement are key areas for improvement. The brain benefits from regular challenges and novel experiences, which help build cognitive reserve - the brain's resilience against damage or decline.</p>
+          </div>`;
+      } else if (lowestScore === medicalScore) {
+        insightsHTML += `
+          <div class="recommendation-section">
+            <h5 class="recommendation-title"><i class="fas fa-lightbulb me-2"></i>Focus Area: Medical Risk Management</h5>
+            <p>Your assessment indicates medical factors represent a priority area for attention. Managing cardiovascular health, addressing genetic risks, and protecting against brain injury can significantly impact long-term cognitive outcomes.</p>
+          </div>`;
+      } else if (lowestScore === nutritionScore) {
+        insightsHTML += `
+          <div class="recommendation-section">
+            <h5 class="recommendation-title"><i class="fas fa-lightbulb me-2"></i>Focus Area: Nutritional Support</h5>
+            <p>Your assessment suggests nutrition is a key area for improvement. The brain requires specific nutrients for optimal function, and dietary patterns like the Mediterranean or MIND diet have been associated with reduced risk of cognitive decline.</p>
+          </div>`;
+      }
+
+      // Display brain insights
+      document.getElementById('brainInsights').innerHTML = insightsHTML;
+
+      // Show results
+      document.getElementById('resultContainer').style.display = 'block';
+    }
+
+    // Add event listener for Enter key in chat input
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+  </script>
 </body>
 </html>

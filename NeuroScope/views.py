@@ -1,7 +1,5 @@
-import os
-from common.groq_client import get_groq_client
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from .forms import MRIScanForm
+from .models import MRI_Scan , Doctor
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -14,12 +12,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .forms import UserUpdateForm, ProfileUpdateForm
-from django.conf import settings
-
-import json
-from django.conf import settings
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from groq import Groq
 import os
 
@@ -59,6 +51,9 @@ def neurocheck_chat(request):
         try:
             data = json.loads(request.body)
             user_message = data.get('message')
+
+            if not user_message:
+                return JsonResponse({'error': 'No message provided'}, status=400)
 
             system_prompt = {
                 "role": "system",
@@ -139,7 +134,8 @@ def profile_view(request):
         'profile_form': profile_form,
         'masked_email': masked_email,
         'profile_picture': profile_picture
-    })
+    }
+                  )
 
 @login_required
 def change_password(request):
@@ -163,3 +159,55 @@ def logout_view(request):
 
 def blog_view(request):
     return render(request, 'blog.html')
+
+
+@login_required
+
+def upload_mri(request):
+    # Ensure doctor instance exists first
+    try:
+        doctor = request.user.doctor
+    except Doctor.DoesNotExist:
+        messages.warning(request, "Doctor profile not found. Please contact admin.")
+        return render(request, 'upload_mri.html', {"form": None, "scans": [], "error": "Doctor profile not found."})
+
+    # If doctor is not verified, prevent actions but do not redirect
+    if not doctor.is_verified:
+        messages.warning(request, "You need to be verified by an admin before uploading or filtering scans. Please upload your certificate first.")
+        return render(request, 'upload_mri.html', {"form": None, "scans": [], "unverified": True})
+
+    scans = MRI_Scan.objects.filter(doctor=doctor).order_by('-uploaded_at')
+
+    # Handle filtering (only for verified users)
+    time_range = request.GET.get("time_range")
+    status = request.GET.get("status")
+    patient_id = request.GET.get("patient_id")
+
+    if patient_id:
+        scans = scans.filter(patient_uid__icontains=patient_id)
+
+    if status and status != "all":
+        scans = scans.filter(status=status)  # Ensure 'status' field exists on MRI_Scan
+
+    if time_range and time_range.isdigit():
+        from datetime import timedelta, datetime
+        cutoff = datetime.now() - timedelta(days=int(time_range))
+        scans = scans.filter(uploaded_at__gte=cutoff)
+
+    # Upload form logic
+    if request.method == 'POST':
+        form = MRIScanForm(request.POST, request.FILES)
+        if form.is_valid():
+            scan = form.save(commit=False)
+            scan.doctor = doctor
+            scan.save()
+            return redirect('scan_detail', scan_id=scan.id)
+    else:
+        form = MRIScanForm()
+
+    context = {
+        'form': form,
+        'scans': scans,
+        'request': request  # pass request for template filtering persistence
+    }
+    return render(request, 'upload_mri.html', context)

@@ -108,3 +108,93 @@ body {
 .btn-primary:hover {
     background: #0056b3;
 }
+
+/* Additional styles to complement the existing CSS in the HTML */
+
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --light-bg: #f5f8fa;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --gradient-bg: linear-gradient(120deg, #8cd9c4, #a6c0e3, #c2b5e5);
+}
+
+/* Add user greeting styles */
+.user-greeting {
+    color: white;
+    margin-right: 15px;
+    font-weight: 500;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: white;
+    border-left: 4px solid var(--warning-color);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    padding: 15px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-content i {
+    color: var(--warning-color);
+    font-size: 20px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.notification-close:hover {
+    color: #333;
+}
+
+/* Dropzone active state */
+.upload-dropzone.dragover {
+    border-color: var(--accent-color);
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+/* Position the upload card at the bottom left */
+.upload-card {
+    left: 30px;
+    right: auto;
+    max-width: 350px;
+}
+
+/* Add pointer cursor to menu items */
+.menu-item {
+    cursor: pointer;
+}
+
+/* Active menu item styles */
+.menu-item.active, .menu-item:hover {
+    background-color: #f0f7ff;
+    color: var(--accent-color);
+}

@@ -49,7 +49,8 @@ class MRI_Scan(models.Model):
     shap_explanation = models.FileField(upload_to='xai_shap/', blank=True, null=True)  # SHAP explanations
     grad_cam_explanation = models.FileField(upload_to='xai_gradcam/', blank=True, null=True)  # Grad-CAM explanations
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Timestamp
-
+    notes = models.TextField(blank=True, null=True)
+    tags = models.CharField(max_length=255, blank=True, null=True)
     def __str__(self):
         return f"Scan {self.patient_uid} uploaded by {self.doctor.user.username}"
 
