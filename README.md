@@ -18,6 +18,6 @@ Neuroscope is a **Django-powered web application** for **automated brain MRI seg
 
 🔹 Backend: Django, Python
 🔹 Frontend: Bootstrap, HTML, CSS
-🔹 Database: SQLite (for development), PostgreSQL (for production)
+🔹 Database: MySQL (for development), PostgreSQL (for production)
 🔹 AI Model: PyTorch, TransUNet
 🔹 XAI Tools: Grad-CAM, SHAP
