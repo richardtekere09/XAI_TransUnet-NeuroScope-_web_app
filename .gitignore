@@ -21,3 +21,6 @@ db.sqlite3
 
 # Ignore static and media files
 /static/
+
+# macOS system files
+.DS_Store
