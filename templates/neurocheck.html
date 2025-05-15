@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% include 'chatbot_widget.html' %}
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NeuroCheck Assistant</title>
@@ -822,26 +824,7 @@
       </div>
 
       <div class="col-lg-6">
-        <!-- AI Assistant Card -->
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title"><i class="fas fa-robot"></i> NeuroCheck AI Assistant</h4>
-          </div>
-          <div class="card-body">
-            <div class="info-card">
-              <p><i class="fas fa-info-circle"></i> Ask questions about your brain health, neurological conditions, or receive personalized advice based on your assessment results.</p>
-            </div>
-            <div class="chat-box" id="chatBox">
-              <div class="chat-entry ai-msg">
-                Hello! I'm your NeuroCheck AI Assistant. I can answer questions about brain health, provide information on neurological conditions, or offer personalized advice based on your assessment. How can I help you today?
-              </div>
-            </div>
-            <div class="chat-input-container">
-              <input type="text" class="form-control chat-input" id="chatInput" placeholder="Ask me anything about brain health...">
-              <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-            </div>
-          </div>
-        </div>
+
 
         <!-- Brain Insights Card -->
         <div class="card">

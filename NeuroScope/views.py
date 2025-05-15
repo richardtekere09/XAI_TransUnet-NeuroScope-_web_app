@@ -71,6 +71,7 @@ def neurocheck_chat(request):
             # Ensure the correct API URL is being used
             response = client.chat.completions.create(
                 model="llama3-70b-8192",  # Check if this is a valid model
+               # model ="gemma@-9b-it ",
                 messages=chat_history,
                 max_tokens=150,
                 temperature=1.2
@@ -162,7 +163,6 @@ def blog_view(request):
 
 
 @login_required
-
 def upload_mri(request):
     # Ensure doctor instance exists first
     try:
